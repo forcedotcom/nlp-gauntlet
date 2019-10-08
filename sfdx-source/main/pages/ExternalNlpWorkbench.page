@@ -1,0 +1,228 @@
+<apex:page controller="ExternalNlpWorkbenchCtrl" docType="html-5.0" lightningStylesheets="true" applyHtmlTag="false" showHeader="false">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+        <head>
+            <title>Nlp Gauntlet Workbench</title>
+        </head>
+
+        <style>
+            body .bPageBlock, .slds-vf-scope .bPageBlock {
+                margin-bottom:0;
+            }
+        </style>
+        <apex:slds />
+
+        <div class="slds-scope">
+            <div style="position:relative;height:50px">
+                <div class="slds-builder-header_container">
+                <header class="slds-builder-header">
+                    <div class="slds-builder-header__item">
+                        <div class="slds-builder-header__item-label slds-media slds-media_center">
+                            <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-utility-builder slds-current-color">
+                                <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                    <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#builder')}"></use>
+                                </svg>
+                            </span>
+                            </div>
+                            <div class="slds-media__body">Nlp Gauntlet Workbench</div>
+                        </div>
+                    </div>
+                    <nav class="slds-builder-header__item slds-builder-header__nav">
+                        <ul class="slds-builder-header__nav-list">
+                            <li class="slds-builder-header__nav-item">
+                                <a href="/lightning/setup/NamedCredential/home" target="_blank" class="slds-builder-header__item-action slds-media slds-media_center">
+                                <span class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-utility-settings slds-current-color">
+                                        <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#settings')}"></use>
+                                        </svg>
+                                    </span>
+                                </span>
+                                <span class="slds-media__body">
+                                    <span class="slds-truncate" title="Link">Named Credentials</span>
+                                </span>
+                                </a>
+                            </li>
+                            <li class="slds-builder-header__nav-item">
+                                <a href="/lightning/setup/CustomMetadata/home" target="_blank" class="slds-builder-header__item-action slds-media slds-media_center">
+                                    <span class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-utility-settings slds-current-color">
+                                        <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#settings')}"></use>
+                                        </svg>
+                                    </span>
+                                    </span>
+                                    <span class="slds-media__body">
+                                    <span class="slds-truncate" title="Link">Custom Metadata Types</span>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                    <div class="slds-builder-header__item slds-builder-header__utilities">
+                        <div class="slds-builder-header__utilities-item">
+                            <a href="/lightning/setup/SetupOneHome/home" class="slds-builder-header__item-action slds-media slds-media_center">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-utility-back slds-current-color">
+                                    <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                        <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#back')}"></use>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">Return to Setup</div>
+                            </a>
+                        </div>
+                    </div>
+                </header>
+                </div>
+            </div>
+        </div>
+
+        <apex:form id="mainForm">
+
+            <apex:pageBlock id="wrapperBlock">
+
+                <apex:actionStatus id="theStatus">
+                    <apex:facet name="start">
+                            <div class="slds-scope">
+                        <div id="spinner" class="slds-spinner_container" >
+                            <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand">
+                                <div class="slds-spinner__dot-a"></div>
+                                <div class="slds-spinner__dot-b"></div>
+                            </div>
+                        </div>
+                        </div>
+                    </apex:facet>
+                </apex:actionStatus>
+                        
+                <apex:pageBlockSection columns="2" id="wrapperSection">
+
+                        <apex:pageBlock id="mainBlock">
+
+                                <apex:pageMessages id="mainMessages"/>
+                                
+                                <apex:pageBlockSection columns="1" title="Configuration" id="mainSection" collapsible="false">
+
+                                    <apex:pageBlock >
+                            
+                                        <apex:pageBlockButtons location="bottom">
+                                            <apex:commandButton action="{!test}" value="Test" styleClass="slds-vf-button_brand" rerender="mainMessages, resultsBlock" status="theStatus"/>
+                                        </apex:pageBlockButtons>
+                                        
+                                        <apex:pageBlockSection columns="1" title="Request Parameters" collapsible="false">
+                
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="Language" for="lang"/>
+                                                <apex:selectList value="{!language}" size="1" id="lang">
+                                                    <apex:selectOptions value="{!userLanguages}"/>
+                                                </apex:selectList>
+                                            </apex:pageBlockSectionItem>
+                
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="Time Zone" for="tz"/>
+                                                <apex:selectList value="{!selectedTimeZoneId}" size="1" id="tz">
+                                                    <apex:selectOptions value="{!timezones}"/>
+                                                </apex:selectList>
+                                            </apex:pageBlockSectionItem>
+                
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="Input Text" for="it"/>
+                                                <apex:inputText value="{!inputText}" required="true" id="it" style="width:90%;" html-placeholder="Input text for prediction ..."/>
+                                            </apex:pageBlockSectionItem>
+                                                                
+                                        </apex:pageBlockSection>
+                                    
+                                    </apex:pageBlock>
+
+                                    <apex:pageBlock id="configBlock">
+                
+                                        <apex:pageBlockSection columns="1" title="Settings" collapsible="true" id="settingSection">
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="(Optional) Custom Metadata Type" for="setting"/>
+                                                <apex:actionRegion>
+                                                    <apex:selectList value="{!selectedSettingName}" required="false" size="1" id="setting">
+                                                        <apex:actionSupport event="onchange" action="{!populateFromSetting}" reRender="configSection, modelConfigSection, mainMessages" status="theStatus"/>
+                                                        <apex:selectOptions value="{!settings}"/>
+                                                    </apex:selectList>
+                                                </apex:actionRegion>
+                                            </apex:pageBlockSectionItem>
+                                        </apex:pageBlockSection>
+                
+                                        <apex:pageBlockSection columns="2" title="Configuration Parameters" collapsible="true" id="configSection">
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="Type" for="st"/>
+                                                <apex:selectList value="{!selectedServiceType}" required="true" size="1" id="st">
+                                                    <apex:selectOptions value="{!serviceTypes}"/>
+                                                </apex:selectList>
+                                            </apex:pageBlockSectionItem>
+
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="Additional Parameters" for="ap"/>
+                                                <apex:inputText value="{!additionalParameters}" id="ap" html-placeholder="param1=value1, param2=value2, ..."/>
+                                            </apex:pageBlockSectionItem>
+
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="Intent Confidence Threshold" for="intentct"/>
+                                                <apex:input type="number" html-step="any" value="{!intentConfidenceThresholdDouble}" id="intentct"/>
+                                            </apex:pageBlockSectionItem>
+                
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="NER Confidence Threshold" for="entityct"/>
+                                                <apex:input type="number" html-step="any" value="{!nerConfidenceThresholdDouble}" id="entityct"/>
+                                            </apex:pageBlockSectionItem>
+                
+                                        </apex:pageBlockSection>
+
+                                        <apex:actionRegion>
+                                            <apex:pageBlockSection columns="2" title="Model Parameters" collapsible="true" id="modelConfigSection">
+                                            
+                                                <apex:repeat value="{!modelSettings}" var="modelSetting">
+                                                    <apex:pageBlockSectionItem>
+                                                    <apex:outputLabel value="Named Credential" for="nck"/>
+                                                        <apex:selectList value="{!modelSetting.namedCredentialKey}" required="true" size="1" id="nck">
+                                                            <apex:selectOptions value="{!namedCredentials}"/>
+                                                        </apex:selectList>
+                                                    </apex:pageBlockSectionItem>
+                                    
+                                                    <apex:pageBlockSectionItem>
+                                                        <apex:outputLabel value="Model Id" for="mi"/>
+                                                        <apex:inputText value="{!modelSetting.modelId}" id="mi"/>
+                                                    </apex:pageBlockSectionItem>
+                                                </apex:repeat>
+                                                
+                                            </apex:pageBlockSection>
+
+                                            <apex:outputPanel id="modelSettingsActions">
+                                                <apex:outputPanel rendered="{!modelSettings.size < 3}" style="padding:10px;">
+                                                    <apex:commandLink action="{!addModelSetting}" value="Add model" id="settingAddCommandLink" rerender="modelConfigSection, modelSettingsActions" status="theStatus"/>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!modelSettings.size > 0}" style="padding:10px;">
+                                                    <apex:commandLink action="{!removeModelSetting}" value="Remove model" id="settingRemoveCommandLink" rerender="modelConfigSection, modelSettingsActions" status="theStatus"/>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+
+                                        </apex:actionRegion>
+                                        
+                                    </apex:pageBlock>
+                                    
+                                </apex:pageBlockSection>
+                
+                            </apex:pageBlock>
+
+                            <apex:pageBlock id="resultsBlock">
+                
+                                <apex:pageBlockSection columns="1" title="Results" collapsible="false">
+                                    <apex:inputTextArea value="{!response}" id="results" style="width:100%;height:700px;"/>
+                                </apex:pageBlockSection>
+
+                            </apex:pageBlock>
+
+                </apex:pageBlockSection>
+            
+            </apex:pageBlock>
+
+        </apex:form>
+ 
+    </html>
+</apex:page>

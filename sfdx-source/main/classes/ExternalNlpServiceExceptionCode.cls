@@ -1,0 +1,6 @@
+public enum ExternalNlpServiceExceptionCode {
+    UNSUPPORTED_SERVICE_TYPE,
+    INVALID_HTTP_RESPONSE_CODE,
+    NORMALIZED_VALUE_ERROR,
+    INVALID_SETTTING
+}

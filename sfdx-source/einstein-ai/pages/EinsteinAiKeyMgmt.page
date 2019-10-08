@@ -1,0 +1,80 @@
+<apex:page controller="EinsteinAiKeyMgmtCtrl" lightningStylesheets="true">
+
+    <head>
+        <title>Einstein Ai Key Management</title>
+    </head>
+
+    <apex:sectionHeader title="Einstein AI Key Management" />
+
+    <apex:form >
+        <apex:pageBlock >
+
+            <apex:pageMessages />
+
+            <apex:pageBlock>
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton action="{!getKeys}" value="Get Keys" styleClass="slds-vf-button_brand" />
+                    <apex:commandButton action="{!activateKey}" value="Activate Selected Key" styleClass="slds-vf-button_brand" />
+                    <apex:commandButton action="{!deleteKey}" value="Delete Selected Key" styleClass="slds-vf-button_brand" />
+                </apex:pageBlockButtons>
+
+                <apex:pageBlockSection columns="2" title="Key Information" collapsible="false">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Einstein.ai Email" for="email"/>
+                        <apex:inputText value="{!userEmail}" required="true" id="email" style="width:90%;" html-placeholder="Enter your einstein.ai email here..."/>
+                    </apex:pageBlockSectionItem>
+
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Use Staging endpoint" for="stgEndpoint"/>
+                        <apex:inputCheckbox value="{!useStagingEndpoint}" id="stgEndpoint" />
+                    </apex:pageBlockSectionItem>
+
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Private Key" for="privk"/>
+                        <apex:inputTextArea value="{!privateKey}" id="privk" style="width:90%;" html-placeholder="Enter your private key here..."/>
+                    </apex:pageBlockSectionItem>
+
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Einstein.AI Public Key" for="pubkeys"/>
+                        <apex:selectList value="{!selectedPublicKey}" size="1" id="pubkeys">
+                            <apex:selectOptions value="{!publicKeys}"/>
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>
+
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Certificate Name" for="certName"/>
+                        <apex:inputText value="{!certName}" id="certName" style="width:90%;" html-placeholder="Enter your cert name here (if available)"/>
+                    </apex:pageBlockSectionItem>
+
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+
+            <apex:pageBlock >
+                <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton action="{!addKey}" value="Add Key" styleClass="slds-vf-button_brand" />
+                </apex:pageBlockButtons>
+
+                <apex:pageBlockSection columns="2" title="Add a new key" collapsible="false">
+
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Public Key Name" for="pubkname"/>
+                        <apex:inputText value="{!publicKeyName}" id="pubkname" style="width:90%;" html-placeholder="Enter your key name..."/>
+                    </apex:pageBlockSectionItem>
+
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Public Key" for="pubk"/>
+                        <apex:inputTextArea value="{!publicKey}" id="pubk" style="width:90%;height:300px;" html-placeholder="Enter your public key here..."/>
+                    </apex:pageBlockSectionItem>
+
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Set as active" for="pubkactive"/>
+                        <apex:inputCheckbox value="{!publicKeyActive}" id="pubkactive" />
+                    </apex:pageBlockSectionItem>
+
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+
+        </apex:pageBlock>
+    </apex:form>
+
+</apex:page>

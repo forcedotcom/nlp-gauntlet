@@ -1,0 +1,31 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Launch Nlp Gauntlet Workbench",
+            "type": "shell",
+            "command": "sfdx",
+            "group": "build",
+            "args": [
+                "force:org:open",
+                "-p",
+                "/apex/ExternalNlpWorkbench"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Launch Einstein Ai Key Management",
+            "type": "shell",
+            "command": "sfdx",
+            "group": "build",
+            "args": [
+                "force:org:open",
+                "-p",
+                "/apex/EinsteinAiKeyMgmt"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}

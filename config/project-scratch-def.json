@@ -1,0 +1,13 @@
+{
+    "orgName": "Stark Industries",
+    "edition": "Enterprise",
+    "features": [
+        "ForceComPlatform"
+    ],
+    "settings": {
+        "orgPreferenceSettings": {
+            "s1DesktopEnabled": true,
+            "selfSetPasswordInApi" : true
+        }
+    }
+}
