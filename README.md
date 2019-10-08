@@ -17,7 +17,7 @@ The goal of this project is to make integration and testing of external NLP serv
 1. Clone the **nlp-gauntlet** repository:
 
    ```bash
-   git clone https://github.com/jonathanrico/nlp-gauntlet
+   git clone https://github.com/forcedotcom/nlp-gauntlet
    cd nlp-gauntlet
    ```
 
