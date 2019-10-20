@@ -195,8 +195,8 @@ public with sharing class DialogFlowService extends ExternalNlpService {
         Double sentimentConfidenceThreshold = this.serviceParams.getSentimentThreshold();
 
         Map<String, Object> resultMap = (Map<String, Object>)bodyMap.get('sentimentAnalysisResult');
+        if (resultMap == null) { return highestScoringExtSentiment; }
         Map<String, Object> textSentimentMap = (Map<String, Object>)resultMap.get('queryTextSentiment');
-
         if (textSentimentMap == null) { return highestScoringExtSentiment; }
 
         Double sentimentScore = (Double)textSentimentMap.get('score');
