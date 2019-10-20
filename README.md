@@ -86,6 +86,7 @@ This project will create some Sample Named Credentials in your org but you will 
             .setModelParams(modelParams)
             .setIntentThreshold((Double)0.7)
             .setNerThreshold((Double)0.7)
+            .setSentimentThreshold((Double)0.7)
             .setAdditionalParams(new Map<String, String>())
             .build();
 
@@ -102,6 +103,7 @@ This project will create some Sample Named Credentials in your org but you will 
         System.debug(results.getIntentResults().getPredictedIntents());
         System.debug(results.getIntentResults().getHighestConfidenceIntentName());
         System.debug(results.getEntityResults().getPredictedEntities());
+        System.debug(results.getSentimentResults().getDocumentSentiment());
 
     ```
 
