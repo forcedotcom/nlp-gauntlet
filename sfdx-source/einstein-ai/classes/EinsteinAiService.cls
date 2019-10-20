@@ -1,5 +1,7 @@
 public with sharing class EinsteinAiService extends ExternalNlpService {
 
+    private static final String SENTIMENT_MODEL_NAME = 'CommunitySentiment';
+
     private static final Set<String> SENTIMENT_LABELS = new Set<String>{
         'positive', 'negative', 'neutral'
     };
@@ -12,7 +14,7 @@ public with sharing class EinsteinAiService extends ExternalNlpService {
         List<HttpRequest> reqs = new List<HttpRequest>();
 
         for(ExternalNlpModelParameters modelParams : this.serviceParams.getModelParams()) {
-            if (modelParams.getModelId() == 'CommunitySentiment') {
+            if (modelParams.getModelId() == SENTIMENT_MODEL_NAME) {
                 reqs.add(EinsteinAiSentimentHandler.buildRequest(modelParams, params));
             } else if (!this.serviceParams.getDisableIntentDetection()) {
                 reqs.add(EinsteinAiIntentHandler.buildRequest(modelParams, params));
