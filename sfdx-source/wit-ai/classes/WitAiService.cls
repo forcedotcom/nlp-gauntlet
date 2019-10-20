@@ -32,6 +32,8 @@ public with sharing class WitAiService extends ExternalNlpService {
         Map<String, ExternalNlpIntent> intentsMap = new Map<String, ExternalNlpIntent>();
         ExternalNlpIntent highestScoringExtIntent = null;
         Map<String, List<ExternalNlpEntity>> entitiesMap = new Map<String, List<ExternalNlpEntity>>();
+        Map<String, ExternalNlpSentiment> sentimentsMap = new Map<String, ExternalNlpSentiment>();
+        ExternalNlpSentiment highestScoringExtSentiment = null;
 
         for (HttpResponse response : responses) {
 
@@ -46,6 +48,9 @@ public with sharing class WitAiService extends ExternalNlpService {
 
             // Named Entity Recognition
             detectEntities(bodyMap, entitiesMap);
+
+            // Sentiment Recognition
+            highestScoringExtSentiment = detectSentiments(bodyMap, sentimentsMap, highestScoringExtSentiment);
         }
 
         String highestConfidenceIntentName = null;
@@ -62,9 +67,22 @@ public with sharing class WitAiService extends ExternalNlpService {
             .setPredictedEntities(entitiesMap)
             .build();
 
+        String highestConfidenceSentimentName = null;
+        if (highestScoringExtSentiment != null && highestScoringExtSentiment.getConfidenceScore() >= this.serviceParams.getSentimentThreshold()) {
+            highestConfidenceSentimentName = highestScoringExtSentiment.getName();
+        }
+
+        ExternalNlpPredictionSentimentResult sentimentPredResult = new ExternalNlpPredictionSentimentResult.Builder()
+            .setDocumentSentiment(new ExternalNlpDocumentSentiment.Builder()
+                .setHighestConfidenceSentimentName(highestConfidenceSentimentName)
+                .setPredictedSentiments(sentimentsMap)
+                .build())
+            .build();
+
         return new ExternalNlpPredictionResult.Builder()
             .setIntentResults(intentPredResult)
             .setEntityResults(entityPredResult)
+            .setSentimentResults(sentimentPredResult)
             .build();
 
     }
@@ -111,7 +129,7 @@ public with sharing class WitAiService extends ExternalNlpService {
 
         for(String entityName : entities.keySet()) {
 
-            if (entityName == 'intent') { continue; }
+            if (entityName == 'intent' || entityName == 'sentiment') { continue; }
 
             // NOTE: Make sure you assign role names for entities in wit to prevent overriding entires in the response map
             List<Object> entityObjects = (List<Object>)entities.get(entityName);
@@ -133,6 +151,41 @@ public with sharing class WitAiService extends ExternalNlpService {
             entitiesMap.put(entityName, extEntities);
 
         }
+
+    }
+
+    private ExternalNlpSentiment detectSentiments(Map<String, Object> bodyMap, Map<String, ExternalNlpSentiment> sentimentsMap, ExternalNlpSentiment highestScoringExtSentiment) {
+
+        Double sentimentConfidenceThreshold = this.serviceParams.getSentimentThreshold();
+
+        Map<String, Object> entities = (Map<String, Object>)bodyMap.get('entities');
+
+        for(String entityName : entities.keySet()) {
+
+            if (entityName != 'sentiment') { continue; }
+
+            List<Object> sentiments = (List<Object>)entities.get(entityName);
+            if (sentiments == null || sentiments.isEmpty()) { continue; }
+
+            for(Object o : sentiments) {
+                Map<String, Object> sentiment = (Map<String, Object>)o;
+                String sentimentName = (String)sentiment.get('value');
+                Double sentimentDetectionConfidence = (Double)sentiment.get('confidence');
+
+                ExternalNlpSentiment extSentiment = new ExternalNlpSentiment.Builder()
+                                    .setName(sentimentName)
+                                    .setConfidenceScore(sentimentDetectionConfidence)
+                                    .build();
+                sentimentsMap.put(extSentiment.getName(), extSentiment);
+
+                if (highestScoringExtSentiment == null || sentimentConfidenceThreshold > highestScoringExtSentiment.getConfidenceScore()) {
+                    highestScoringExtSentiment = extSentiment;
+                }
+            }
+
+        }
+
+        return highestScoringExtSentiment;
 
     }
 

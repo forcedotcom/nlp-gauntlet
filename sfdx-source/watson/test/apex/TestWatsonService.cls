@@ -76,6 +76,31 @@ private class TestWatsonService {
         System.assertEquals('POST', req.getMethod());
     }
 
+   @isTest
+    private static void testGetSentimentPredictionRequest() {
+        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(
+                    ExternalNlpServiceType.WATSON,
+                    getTestServiceParameters('Sentiment'));
+        String input = 'Hello I need help, Mark was helping me.';
+
+        ExternalNlpPredictionRequestParameters requestParams = new ExternalNlpPredictionRequestParameters.Builder()
+            .setInput(input)
+            .setLanguage('en_US')
+            .build();
+
+        Test.startTest();
+            List<HttpRequest> reqs = nlpService.getPredictionRequests(requestParams);
+        Test.stopTest();
+
+        System.assertNotEquals(null, reqs);
+        System.assertNotEquals(0, reqs.size());
+        HttpRequest req = reqs.get(0);
+        System.assertNotEquals(null, req);
+        System.assertNotEquals(null, req.getBody());
+        System.assert(req.getBody().contains(input), 'input not part of payload');
+        System.assertEquals('POST', req.getMethod());
+    }
+
     @isTest
     private static void testGetPredictionResult() {
         Test.setMock(HttpCalloutMock.class, new WatsonAPICalloutMockImpl());
@@ -187,7 +212,95 @@ private class TestWatsonService {
         System.assertEquals(0, result.getIntentResults().getPredictedIntents().size());
         System.assertEquals(0, result.getEntityResults().getPredictedEntities().size());
         System.assertEquals(null, result.getToneResults());
+        System.assertEquals(null, result.getSentimentResults());
         System.assertNotEquals(null, result.getEmotionResults());
+        System.assertEquals(5, result.getEmotionResults().getDocumentEmotion().getPredictedEmotions().size());
+        System.assertEquals('sadness', result.getEmotionResults().getDocumentEmotion().getHighestConfidenceEmotionName());
+        Map<String, ExternalNlpEmotion> extEmotionsMap = result.getEmotionResults().getDocumentEmotion().getPredictedEmotions();
+        System.assertEquals('sadness', extEmotionsMap.get('sadness').getName());
+        System.assertEquals(Double.valueOf('0.765311'), extEmotionsMap.get('sadness').getConfidenceScore());
+    }
+
+    @isTest
+    private static void testGetSentimentPredictionResult() {
+        Test.setMock(HttpCalloutMock.class, new WatsonAPICalloutMockImpl());
+        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(
+                    ExternalNlpServiceType.WATSON,
+                    getTestServiceParameters('Sentiment'));
+        String input = 'Hello I need help!';
+
+        ExternalNlpPredictionRequestParameters requestParams = new ExternalNlpPredictionRequestParameters.Builder()
+            .setInput(input)
+            .setLanguage('en_US')
+            .build();
+
+        List<HttpRequest> reqs = nlpService.getPredictionRequests(requestParams);
+
+        Test.startTest();
+            Http h = new Http();
+            List<HttpResponse> responses = new List<HttpResponse>();
+            for(HttpRequest req : reqs) {
+                responses.add( h.send(req));
+            }
+            ExternalNlpPredictionResultParameters resultParams = new ExternalNlpPredictionResultParameters.Builder()
+                .setHttpResponses(responses)
+                .build();
+                
+            ExternalNlpPredictionResult result = nlpService.getPredictionResult(resultParams);
+        Test.stopTest();
+        
+        System.assertEquals(0, result.getIntentResults().getPredictedIntents().size());
+        System.assertEquals(0, result.getEntityResults().getPredictedEntities().size());
+        System.assertEquals(null, result.getToneResults());
+        System.assertEquals(null, result.getEmotionResults());
+        System.assertNotEquals(null, result.getSentimentResults());
+
+        System.assertEquals(1, result.getSentimentResults().getDocumentSentiment().getPredictedSentiments().size());
+        System.assertEquals('positive', result.getSentimentResults().getDocumentSentiment().getHighestConfidenceSentimentName());
+        Map<String, ExternalNlpSentiment> extSentimentsMap = result.getSentimentResults().getDocumentSentiment().getPredictedSentiments();
+        System.assertEquals('positive', extSentimentsMap.get('positive').getName());
+        System.assertEquals(Double.valueOf('0.765311'), extSentimentsMap.get('positive').getConfidenceScore());
+    }
+
+    @isTest
+    private static void testGetEmotionAndSentimentPredictionResult() {
+        Test.setMock(HttpCalloutMock.class, new WatsonAPICalloutMockImpl());
+        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(
+                    ExternalNlpServiceType.WATSON,
+                    getTestServiceParameters('Emotion,Sentiment'));
+        String input = 'Hello I need help!';
+
+        ExternalNlpPredictionRequestParameters requestParams = new ExternalNlpPredictionRequestParameters.Builder()
+            .setInput(input)
+            .setLanguage('en_US')
+            .build();
+
+        List<HttpRequest> reqs = nlpService.getPredictionRequests(requestParams);
+
+        Test.startTest();
+            Http h = new Http();
+            List<HttpResponse> responses = new List<HttpResponse>();
+            for(HttpRequest req : reqs) {
+                responses.add( h.send(req));
+            }
+            ExternalNlpPredictionResultParameters resultParams = new ExternalNlpPredictionResultParameters.Builder()
+                .setHttpResponses(responses)
+                .build();
+                
+            ExternalNlpPredictionResult result = nlpService.getPredictionResult(resultParams);
+        Test.stopTest();
+        
+        System.assertEquals(0, result.getIntentResults().getPredictedIntents().size());
+        System.assertEquals(0, result.getEntityResults().getPredictedEntities().size());
+        System.assertEquals(null, result.getToneResults());
+        System.assertNotEquals(null, result.getEmotionResults());
+        System.assertNotEquals(null, result.getSentimentResults());
+        System.assertEquals(1, result.getSentimentResults().getDocumentSentiment().getPredictedSentiments().size());
+        System.assertEquals('positive', result.getSentimentResults().getDocumentSentiment().getHighestConfidenceSentimentName());
+        Map<String, ExternalNlpSentiment> extSentimentsMap = result.getSentimentResults().getDocumentSentiment().getPredictedSentiments();
+        System.assertEquals('positive', extSentimentsMap.get('positive').getName());
+        System.assertEquals(Double.valueOf('0.765311'), extSentimentsMap.get('positive').getConfidenceScore());
+
         System.assertEquals(5, result.getEmotionResults().getDocumentEmotion().getPredictedEmotions().size());
         System.assertEquals('sadness', result.getEmotionResults().getDocumentEmotion().getHighestConfidenceEmotionName());
         Map<String, ExternalNlpEmotion> extEmotionsMap = result.getEmotionResults().getDocumentEmotion().getPredictedEmotions();

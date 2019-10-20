@@ -31,25 +31,42 @@ public with sharing class WatsonAPICalloutMockImpl implements HttpCalloutMock {
                         '}'+
                     '}';
         } else if (req.getEndpoint().contains('/natural-language-understanding/api/v1/analyze')) {
-            body = '{' +
-                '"usage": {' +
+            Map<String, Object> reqMap = (Map<String, Object>)JSON.deserializeUntyped(req.getBody());
+            Map<String, Object> featuresMap = (Map<String, Object>)reqMap.get('features');
+            body ='{';
+            body += '"usage": {' +
                     '"text_units": 1,' +
                     '"text_characters": 64,' +
                     '"features": 1' +
                 '},' +
-                '"language": "en",' +
-                '"emotion": {' +
-                    '"document": {' +
-                        '"emotion": {' +
-                            '"sadness": 0.765311,' +
-                            '"joy": 0.013818,' +
-                            '"fear": 0.223756,' +
-                            '"disgust": 0.13427,' +
-                            '"anger": 0.154534' +
-                        '}' +
-                    '}' +
-                '}' +
-            '}';
+                '"language": "en",';
+
+            List<String> featureResponses = new List<String>();
+            if (featuresMap.containsKey('emotion')) {
+                featureResponses.add('"emotion": {' +
+                            '"document": {' +
+                                '"emotion": {' +
+                                    '"sadness": 0.765311,' +
+                                    '"joy": 0.013818,' +
+                                    '"fear": 0.223756,' +
+                                    '"disgust": 0.13427,' +
+                                    '"anger": 0.154534' +
+                                '}' +
+                            '}' +
+                        '}');
+            }
+
+            if (featuresMap.containsKey('sentiment')) {
+                featureResponses.add('"sentiment": {' +
+                            '"document": {' +
+                                '"score": 0.765311,' +
+                                '"label": "positive"' +
+                            '}' +
+                        '}');
+            }
+
+            body += String.join(featureResponses, ',');
+            body += '}';
         }
         res.setBody(body);
 

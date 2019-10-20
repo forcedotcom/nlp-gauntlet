@@ -2,9 +2,12 @@ public with sharing class ExternalNlpServiceParameters {
 
     public final static Double DEFAULT_INTENT_CONFIDENCE_THRESHOLD = 0.7;
     public final static Double DEFAULT_NER_CONFIDENCE_THRESHOLD = 0.7;
-    
+    public final static Double DEFAULT_SENTIMENT_CONFIDENCE_THRESHOLD = 0.7;
+
     private final Double intentThreshold;
     private final Double nerThreshold;
+    private final Double sentimentThreshold;
+
     private final List<ExternalNlpModelParameters> modelParams;
     private final Map<String, String> additionalParams;
     private final Boolean disableIntentDetection;
@@ -13,6 +16,7 @@ public with sharing class ExternalNlpServiceParameters {
     public ExternalNlpServiceParameters(ExternalNlpServiceParameters.Builder builder) {
         this.intentThreshold = builder.intentThreshold;
         this.nerThreshold = builder.nerThreshold;
+        this.sentimentThreshold = builder.sentimentThreshold;
         this.modelParams = builder.modelParams; 
         this.additionalParams = builder.additionalParams;
         this.disableIntentDetection = builder.disableIntentDetection == null ? false : builder.disableIntentDetection;
@@ -25,6 +29,10 @@ public with sharing class ExternalNlpServiceParameters {
 
     public Double getNerThreshold() {
         return this.nerThreshold == null ? DEFAULT_NER_CONFIDENCE_THRESHOLD : this.nerThreshold;
+    }
+
+    public Double getSentimentThreshold() {
+        return this.sentimentThreshold == null ? DEFAULT_SENTIMENT_CONFIDENCE_THRESHOLD : this.sentimentThreshold;
     }
 
     public List<ExternalNlpModelParameters> getModelParams() {
@@ -47,6 +55,7 @@ public with sharing class ExternalNlpServiceParameters {
 
         private Double intentThreshold;
         private Double nerThreshold;
+        private Double sentimentThreshold;
         private Map<String, String> additionalParams;
         private List<ExternalNlpModelParameters> modelParams;
         private Boolean disableIntentDetection;
@@ -59,6 +68,11 @@ public with sharing class ExternalNlpServiceParameters {
 
         public Builder setNerThreshold(Double nerThreshold){
             this.nerThreshold = nerThreshold;
+            return this;
+        }
+
+        public Builder setSentimentThreshold(Double sentimentThreshold){
+            this.sentimentThreshold = sentimentThreshold;
             return this;
         }
 

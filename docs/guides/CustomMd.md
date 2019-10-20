@@ -11,6 +11,7 @@ You can leverage Custom Metadata Types to store your connection and model settin
 - Provider Type
 - Intent Confidence Threshold
 - NER Confidence Threshold
+- Sentiment Confidence Threshold
 - Additional parameters (comma separated values)
 
 Below is a sample of the parameteres use by a Microsoft Luis configuration.

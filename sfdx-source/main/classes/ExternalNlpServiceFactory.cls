@@ -12,6 +12,7 @@ public with sharing class ExternalNlpServiceFactory {
         Map<String,String> additionalParametersMap = ExternalNlpUtils.convertStringToMap(setting.Additional_Parameters__c);
         Decimal intentConfidenceThreshold = setting.Intent_Confidence_Threshold__c;
         Decimal nerConfidenceThreshold = setting.NER_Confidence_Threshold__c;
+        Decimal sentimentConfidenceThreshold = setting.Sentiment_Confidence_Threshold__c;
 
         List<ExternalNlpModelParameters> modelParams = new List<ExternalNlpModelParameters>();
 
@@ -33,6 +34,7 @@ public with sharing class ExternalNlpServiceFactory {
             .setModelParams(modelParams)
             .setIntentThreshold(intentConfidenceThreshold == null ? null : intentConfidenceThreshold.doubleValue())
             .setNerThreshold(nerConfidenceThreshold == null ? null : nerConfidenceThreshold.doubleValue())
+            .setSentimentThreshold(sentimentConfidenceThreshold == null ? null : sentimentConfidenceThreshold.doubleValue())
             .setAdditionalParams(additionalParametersMap)
             .build();
 
@@ -65,7 +67,8 @@ public with sharing class ExternalNlpServiceFactory {
                 Type__c = 'EINSTEIN_AI',
                 Additional_Parameters__c = 'param1=value1',
                 Intent_Confidence_Threshold__c = 0.9,
-                NER_Confidence_Threshold__c = 0.9
+                NER_Confidence_Threshold__c = 0.9,
+                Sentiment_Confidence_Threshold__c = 0.7
             );
             settings.add(testSetting);
         } else {
@@ -75,6 +78,7 @@ public with sharing class ExternalNlpServiceFactory {
                 ,Additional_Parameters__c
                 ,Intent_Confidence_Threshold__c
                 ,NER_Confidence_Threshold__c
+                ,Sentiment_Confidence_Threshold__c
                 ,(select Model_Id__c, Named_Credential_Name__c from External_Nlp_Model_Settings__r)
                 from External_Nlp_Service_Setting__mdt
                 where DeveloperName = :customMetadataName

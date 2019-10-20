@@ -108,9 +108,10 @@ Set the following parameters in the workbench and click the `Test` button :
 - Additional Parameters : < empty >
 - Intent Confidence Threshold : Set to a value between 0 and 1, if empty it defaults to 0.7
 - NER Confidence Threshold : Set to a value between 0 and 1, if empty it defaults to 0.7
+- Sentiment Confidence Threshold : Set to a value between 0 and 1, if empty it defaults to 0.7
 
 - Named Credential : The Name of the Named Credential you created for this integration
-- Model Id : The model id for the model you trained in Einstein.ai
+- Model Id : The model id for the model you trained in Einstein.ai (use `CommunitySentiment` as Model Id for Sentiment Analysis)
 
 
 - Language : Your desired language

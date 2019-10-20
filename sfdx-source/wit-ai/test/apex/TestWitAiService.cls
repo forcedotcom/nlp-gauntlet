@@ -61,11 +61,18 @@ private class TestWitAiService {
         System.assertEquals('Make_Appointment', extIntent.getName());
         System.assertEquals(Double.valueOf('0.64313723530264'), extIntent.getConfidenceScore());
         System.assertEquals(2, result.getEntityResults().getPredictedEntities().size());
+        
         List<ExternalNlpEntity> extEntities = result.getEntityResults().getPredictedEntities().get('Car_Make');
         System.assertNotEquals(null, extEntities);
         System.assertEquals('Car_Make', extEntities.get(0).getName());
         System.assertEquals('Tesla', extEntities.get(0).getValue());
         System.assertEquals(Double.valueOf('0.88855520066342'), extEntities.get(0).getConfidenceScore());
+
+        System.assertEquals(1, result.getSentimentResults().getDocumentSentiment().getPredictedSentiments().size());
+        System.assertEquals('positive', result.getSentimentResults().getDocumentSentiment().getHighestConfidenceSentimentName());
+        Map<String, ExternalNlpSentiment> extSentimentsMap = result.getSentimentResults().getDocumentSentiment().getPredictedSentiments();
+        System.assertEquals('positive', extSentimentsMap.get('positive').getName());
+        System.assertEquals(Double.valueOf('0.89855520066342'), extSentimentsMap.get('positive').getConfidenceScore());
     }
 
     @isTest

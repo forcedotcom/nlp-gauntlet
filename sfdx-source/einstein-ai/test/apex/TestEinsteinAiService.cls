@@ -64,6 +64,41 @@ private class TestEinsteinAiService {
     }
 
     @isTest
+    private static void testGetSentimentPredictionResult() {
+        Test.setMock(HttpCalloutMock.class, new EinstienAiAPICalloutMockImpl());
+        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(
+                    ExternalNlpServiceType.EINSTEIN_AI,
+                    getTestSentimentServiceParameters());
+        String input = 'i want to schedule an appointment for my Tesla tomorrow at 9 am';
+
+        ExternalNlpPredictionRequestParameters requestParams = new ExternalNlpPredictionRequestParameters.Builder()
+            .setInput(input)
+            .setLanguage('en_US')
+            .build();
+
+        List<HttpRequest> reqs = nlpService.getPredictionRequests(requestParams);
+
+        Test.startTest();
+            Http h = new Http();
+            List<HttpResponse> responses = new List<HttpResponse>();
+            for(HttpRequest req : reqs) {
+                responses.add( h.send(req));
+            }
+            ExternalNlpPredictionResultParameters resultParams = new ExternalNlpPredictionResultParameters.Builder()
+                .setHttpResponses(responses)
+                .build();
+            ExternalNlpPredictionResult result = nlpService.getPredictionResult(resultParams);
+        Test.stopTest();
+        
+        System.assertEquals(3, result.getSentimentResults().getDocumentSentiment().getPredictedSentiments().size());
+        System.assertEquals('positive', result.getSentimentResults().getDocumentSentiment().getHighestConfidenceSentimentName());
+        ExternalNlpSentiment extSentiment = result.getSentimentResults().getDocumentSentiment().getPredictedSentiments().get('neutral');
+        System.assertNotEquals(null, extSentiment);
+        System.assertEquals('neutral', extSentiment.getName());
+        System.assertEquals(Double.valueOf('0.00033304645'), extSentiment.getConfidenceScore());
+    }
+
+    @isTest
     private static void testGetValidNormalizedValues() {
         ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(
                     ExternalNlpServiceType.EINSTEIN_AI,
@@ -128,5 +163,23 @@ private class TestEinsteinAiService {
 
         return serviceParams;
     }
+
+    private static ExternalNlpServiceParameters getTestSentimentServiceParameters() {
+        List<ExternalNlpModelParameters> modelParams = new List<ExternalNlpModelParameters>();
+
+        modelParams.add(new ExternalNlpModelParameters.Builder()
+            .setModelId('CommunitySentiment')
+            .setNamedCredentialKey('testKey')
+            .build());
+
+        ExternalNlpServiceParameters serviceParams = new ExternalNlpServiceParameters.Builder()
+            .setModelParams(modelParams)
+            .setSentimentThreshold((Double)0.7)
+            .setAdditionalParams(null)
+            .build();
+
+        return serviceParams;
+    }
+
 
 }

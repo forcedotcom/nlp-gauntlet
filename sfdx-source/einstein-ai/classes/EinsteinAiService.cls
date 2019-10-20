@@ -1,5 +1,9 @@
 public with sharing class EinsteinAiService extends ExternalNlpService {
 
+    private static final Set<String> SENTIMENT_LABELS = new Set<String>{
+        'positive', 'negative', 'neutral'
+    };
+
     public EinsteinAiService(ExternalNlpServiceParameters serviceParams){
         this.serviceParams = serviceParams;
     }
@@ -8,7 +12,9 @@ public with sharing class EinsteinAiService extends ExternalNlpService {
         List<HttpRequest> reqs = new List<HttpRequest>();
 
         for(ExternalNlpModelParameters modelParams : this.serviceParams.getModelParams()) {
-            if (!this.serviceParams.getDisableIntentDetection()) {
+            if (modelParams.getModelId() == 'CommunitySentiment') {
+                reqs.add(EinsteinAiSentimentHandler.buildRequest(modelParams, params));
+            } else if (!this.serviceParams.getDisableIntentDetection()) {
                 reqs.add(EinsteinAiIntentHandler.buildRequest(modelParams, params));
             }
         }
@@ -20,7 +26,8 @@ public with sharing class EinsteinAiService extends ExternalNlpService {
         List<HttpResponse> responses = params.getHttpResponses();
 
         Map<String, List<Map<String, Object>>> requestBodyMap = new Map<String, List<Map<String, Object>>>{
-            'intent' => new List<Map<String, Object>>()
+            'intent' => new List<Map<String, Object>>(),
+            'sentiment' => new List<Map<String, Object>>()
         };
 
         for (HttpResponse response : responses) {
@@ -32,9 +39,18 @@ public with sharing class EinsteinAiService extends ExternalNlpService {
             List<Object> probabilities = (List<Object>)bodyMap.get('probabilities');
 
             if(probabilities != null && !probabilities.isEmpty()) {
+                Set<String> labels = new Set<String>();
                 for(Object o : probabilities) {
                     Map<String, Object> probability = (Map<String, Object>)o;
-                    if (probability.containsKey('token') || probability.containsKey('normalizedValue')) {
+                    labels.add((String)probability.get('label'));
+                }
+                boolean isSentiment = labels != null && labels.size() == 3 && labels.containsAll(SENTIMENT_LABELS);
+
+                for(Object o : probabilities) {
+                    Map<String, Object> probability = (Map<String, Object>)o;
+                    if (isSentiment) {
+                        requestBodyMap.get('sentiment').add(probability);
+                    }else if (probability.containsKey('token') || probability.containsKey('normalizedValue')) {
                         // TODO: NER detection response
                     } else {
                         if (!this.serviceParams.getDisableIntentDetection()) {
@@ -42,6 +58,7 @@ public with sharing class EinsteinAiService extends ExternalNlpService {
                         }
                     }
                 }
+                
             }
         }
 
@@ -49,8 +66,13 @@ public with sharing class EinsteinAiService extends ExternalNlpService {
             requestBodyMap.get('intent'),
             this.serviceParams.getIntentThreshold());
 
+        ExternalNlpPredictionResult sentimentResult = EinsteinAiSentimentHandler.buildResult(
+            requestBodyMap.get('sentiment'),
+            this.serviceParams.getSentimentThreshold());
+
         return new ExternalNlpPredictionResult.Builder()
             .setIntentResults(intentResult.getIntentResults())
+            .setSentimentResults(sentimentResult.getSentimentResults())
             .build();
     }
 
