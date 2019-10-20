@@ -65,6 +65,12 @@ private class TestDialogFlowService {
         System.assertEquals('Car_Make', extEntities.get(0).getName());
         System.assertEquals('Tesla', extEntities.get(0).getValue());
         System.assertEquals(Double.valueOf('1.0'), extEntities.get(0).getConfidenceScore());
+        System.assertEquals(1, result.getSentimentResults().getDocumentSentiment().getPredictedSentiments().size());
+        System.assertEquals('positive', result.getSentimentResults().getDocumentSentiment().getHighestConfidenceSentimentName());
+        Map<String, ExternalNlpSentiment> extSentimentsMap = result.getSentimentResults().getDocumentSentiment().getPredictedSentiments();
+        System.assertEquals('positive', extSentimentsMap.get('positive').getName());
+        System.assertEquals(Double.valueOf('0.8'), extSentimentsMap.get('positive').getConfidenceScore());
+        System.assertEquals(Double.valueOf('0.8'), extSentimentsMap.get('positive').getMagnitude());
     }
 
     @isTest

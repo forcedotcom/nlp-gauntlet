@@ -25,6 +25,12 @@ public with sharing class DialogFlowAPICalloutMockImpl  implements HttpCalloutMo
                             '"end_conversation": true'+
                             '},'+
                             '"languageCode": "en"'+
+                        '},'+
+                        '"sentimentAnalysisResult": {'+
+                            '"queryTextSentiment": {'+
+                                '"score": 0.8,'+
+                                '"magnitude": 0.8'+
+                            '}'+
                         '}'+
                     '}';
         }
