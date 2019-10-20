@@ -67,9 +67,14 @@ public with sharing class WitAiService extends ExternalNlpService {
             .setPredictedEntities(entitiesMap)
             .build();
 
+        String highestConfidenceSentimentName = null;
+        if (highestScoringExtSentiment != null && highestScoringExtSentiment.getConfidenceScore() >= this.serviceParams.getSentimentThreshold()) {
+            highestConfidenceSentimentName = highestScoringExtSentiment.getName();
+        }
+
         ExternalNlpPredictionSentimentResult sentimentPredResult = new ExternalNlpPredictionSentimentResult.Builder()
             .setDocumentSentiment(new ExternalNlpDocumentSentiment.Builder()
-                .setHighestConfidenceSentimentName(highestScoringExtSentiment.getName())
+                .setHighestConfidenceSentimentName(highestConfidenceSentimentName)
                 .setPredictedSentiments(sentimentsMap)
                 .build())
             .build();
