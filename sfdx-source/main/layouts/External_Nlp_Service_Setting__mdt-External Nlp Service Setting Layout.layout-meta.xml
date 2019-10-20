@@ -30,6 +30,10 @@
                 <behavior>Edit</behavior>
                 <field>Additional_Parameters__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Sentiment_Confidence_Threshold__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

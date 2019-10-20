@@ -23,6 +23,24 @@ public with sharing class EinstienAiAPICalloutMockImpl implements HttpCalloutMoc
                         '],'+
                         '"object": "predictresponse"'+
                     '}';
+        } else if(req.getEndpoint().contains('/language/sentiment')) {
+            body = '{'+
+                        '"probabilities": ['+
+                            '{'+
+                                '"label": "positive",'+
+                                '"probability": 0.9984889'+
+                            '},'+
+                            '{'+
+                                '"label": "neutral",'+
+                                '"probability": 0.00033304645'+
+                            '},'+
+                            '{'+
+                                '"label": "negative",'+
+                                '"probability": 0.000053200347'+
+                            '}'+
+                        '],'+
+                        '"object": "predictresponse"'+
+                    '}';
         }
         res.setBody(body);
 

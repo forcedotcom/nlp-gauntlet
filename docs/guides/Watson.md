@@ -90,21 +90,21 @@
 
 --
 
-## Using Watson NLU API for Emotion Analysis
+## Using Watson NLU API for Emotion / Sentiment Analysis
 
 1 - Create a new Watson NLU service.
 
-![Watson Tone Setup](/docs/guides/images/watson/watsonnlu1.png?raw=true)
+![Watson NLU Setup](/docs/guides/images/watson/watsonnlu1.png?raw=true)
 
 2 - Go to the resource management section and copy the API Key
 
-![Watson Tone Setup](/docs/guides/images/watson/watsonnlu2.png?raw=true)
+![Watson NLU Setup](/docs/guides/images/watson/watsonnlu2.png?raw=true)
 
 3 - Next, create a Named Credential for Watson API that uses your API Key
 
     Go to Setup > Administer > Security Controls > Named Credentials
 
-![Watson Assistant Setup](/docs/guides/images/watson/watson3.png?raw=true)
+![Watson NLU Setup](/docs/guides/images/watson/watson3.png?raw=true)
 
 - URL : https://gateway.watsonplatform.net
 - Identity Type : Named Principal
@@ -121,7 +121,7 @@
 
 - Type : `WATSON`
 - Named Credential Key : the Named Credential you created for this integration
-- Model Id : `Emotion`
+- Model Id : `Emotion` OR `Sentiment` OR `Emotion,Sentiment`
 - Additional Parameters : < empty >
 
 - Language : Your desired language

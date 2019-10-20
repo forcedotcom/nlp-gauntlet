@@ -12,6 +12,7 @@ public with sharing class ExternalNlpWorkbenchCtrl {
     public String selectedSettingName{get;set;}
     public Double intentConfidenceThresholdDouble{get;set;}
     public Double nerConfidenceThresholdDouble{get;set;}
+    public Double sentimentConfidenceThresholdDouble{get;set;}
     public transient String response{get;set;} 
 
     public class ModelSetting {
@@ -102,6 +103,7 @@ public with sharing class ExternalNlpWorkbenchCtrl {
                                                         ,Additional_Parameters__c
                                                         ,Intent_Confidence_Threshold__c
                                                         ,NER_Confidence_Threshold__c
+                                                        ,Sentiment_Confidence_Threshold__c
                                                         ,(select Model_Id__c, Named_Credential_Name__c from External_Nlp_Model_Settings__r)
                                                         from External_Nlp_Service_Setting__mdt 
                                                         where DeveloperName = :selectedSettingName
@@ -119,6 +121,7 @@ public with sharing class ExternalNlpWorkbenchCtrl {
         this.selectedServiceType = setting == null ? '' : setting.Type__c;
         this.intentConfidenceThresholdDouble = setting == null ? null : setting.Intent_Confidence_Threshold__c;
         this.nerConfidenceThresholdDouble = setting == null ? null : setting.NER_Confidence_Threshold__c;
+        this.sentimentConfidenceThresholdDouble = setting == null ? null : setting.Sentiment_Confidence_Threshold__c;
         return null;
     }
 
@@ -139,6 +142,7 @@ public with sharing class ExternalNlpWorkbenchCtrl {
                 .setModelParams(modelParams)
                 .setIntentThreshold(intentConfidenceThresholdDouble)
                 .setNerThreshold(nerConfidenceThresholdDouble)
+                .setSentimentThreshold(sentimentConfidenceThresholdDouble)
                 .setAdditionalParams(additionalParametersMap)
                 .build();
 

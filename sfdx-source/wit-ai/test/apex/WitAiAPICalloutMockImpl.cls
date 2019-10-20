@@ -11,7 +11,8 @@ public with sharing class WitAiAPICalloutMockImpl implements HttpCalloutMock {
                         '"entities": {'+
                             '"Appointment_Date": [{"confidence":0.85160447853199,"values":[{"value":"2019-07-05T09:00:00.000-07:00","grain":"hour","type":"value"}],"value":"2019-07-05T09:00:00.000-07:00","grain":"hour","type":"value"}],'+
                             '"Car_Make": [{"confidence":0.88855520066342,"value":"Tesla","type":"value"}],'+
-                            '"intent": [{"confidence":0.64313723530264,"value":"Make_Appointment"}]'+
+                            '"intent": [{"confidence":0.64313723530264,"value":"Make_Appointment"}],'+
+                            '"sentiment": [{"confidence":0.89855520066342,"value":"positive"}]'+
                         '},'+
                         '"msg_id": "1eKXdlNi5RUIuPGyY"'+
                     '}';

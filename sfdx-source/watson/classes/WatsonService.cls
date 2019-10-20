@@ -1,5 +1,10 @@
 public with sharing class WatsonService extends ExternalNlpService {
 
+    private static final Set<String> WATSON_NLU_MODELS = new Set<String>{
+        'Emotion',
+        'Sentiment'
+    };
+
     public WatsonService(ExternalNlpServiceParameters serviceParams){
         this.serviceParams = serviceParams;
     }
@@ -9,7 +14,7 @@ public with sharing class WatsonService extends ExternalNlpService {
         for(ExternalNlpModelParameters modelParams : this.serviceParams.getModelParams()) {
             if (modelParams.getModelId() == 'Tone') {
                 reqs.add(WatsonToneAnalyzerHandler.buildRequest(modelParams, params));
-            } else if (modelParams.getModelId() == 'Emotion') {
+            } else if (WATSON_NLU_MODELS.clone().removeAll(modelParams.getModelId().split(','))) {
                 reqs.add(WatsonNluHandler.buildRequest(modelParams, params));
             } else {
                 reqs.add(WatsonAssistantHandler.buildRequest(modelParams, params));
@@ -23,7 +28,7 @@ public with sharing class WatsonService extends ExternalNlpService {
         Map<String, List<Map<String, Object>>> requestBodyMap = new Map<String, List<Map<String, Object>>>{
             'intent_ner' => new List<Map<String, Object>>(),
             'tone' => new List<Map<String, Object>>(),
-            'emotion' => new List<Map<String, Object>>()
+            'nlu' => new List<Map<String, Object>>()
         };
 
         for (HttpResponse response :  params.getHttpResponses()) {
@@ -37,8 +42,8 @@ public with sharing class WatsonService extends ExternalNlpService {
                 requestBodyMap.get('intent_ner').add(bodyMap);
             } else if (bodyMap.containsKey('document_tone')) {
                 requestBodyMap.get('tone').add(bodyMap);
-            } else if (bodyMap.containsKey('emotion')) {
-                requestBodyMap.get('emotion').add(bodyMap);
+            } else if (bodyMap.containsKey('emotion') || bodyMap.containsKey('sentiment')) {
+                    requestBodyMap.get('nlu').add(bodyMap);
             }
         }
 
@@ -48,13 +53,15 @@ public with sharing class WatsonService extends ExternalNlpService {
             ,serviceParams.getDisableIntentDetection()
             ,serviceParams.getDisableEntityExtraction());
         ExternalNlpPredictionResult toneResult = WatsonToneAnalyzerHandler.buildResult(requestBodyMap.get('tone'));
-        ExternalNlpPredictionResult emotionResult = WatsonNluHandler.buildResult(requestBodyMap.get('emotion'));
+        ExternalNlpPredictionResult nluResult = WatsonNluHandler.buildResult(requestBodyMap.get('nlu')
+            ,serviceParams.getSentimentThreshold());
 
         return new ExternalNlpPredictionResult.Builder()
             .setIntentResults(intentNerResult.getIntentResults())
             .setEntityResults(intentNerResult.getEntityResults())
             .setToneResults(toneResult.getToneResults())
-            .setEmotionResults(emotionResult.getEmotionResults())
+            .setEmotionResults(nluResult.getEmotionResults())
+            .setSentimentResults(nluResult.getSentimentResults())
             .build();
     }
 

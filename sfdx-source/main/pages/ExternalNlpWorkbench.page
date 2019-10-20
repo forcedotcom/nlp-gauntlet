@@ -171,6 +171,11 @@
                                                 <apex:outputLabel value="NER Confidence Threshold" for="entityct"/>
                                                 <apex:input type="number" html-step="any" value="{!nerConfidenceThresholdDouble}" id="entityct"/>
                                             </apex:pageBlockSectionItem>
+
+                                            <apex:pageBlockSectionItem>
+                                                <apex:outputLabel value="Sentiment Confidence Threshold" for="sentimentct"/>
+                                                <apex:input type="number" html-step="any" value="{!sentimentConfidenceThresholdDouble}" id="sentimentct"/>
+                                            </apex:pageBlockSectionItem>
                 
                                         </apex:pageBlockSection>
 
