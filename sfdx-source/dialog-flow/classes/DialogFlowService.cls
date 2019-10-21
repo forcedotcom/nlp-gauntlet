@@ -46,6 +46,11 @@ public with sharing class DialogFlowService extends ExternalNlpService {
             endpoint += '/'+API_VERSION+'/projects/'+modelParams.getModelId()+'/agent/sessions/'+sessionId+':detectIntent';
 
             Map<String, Object> queryInputMap = new Map<String,Object>{
+                'queryParams' => new Map<String, Object>{
+                    'sentimentAnalysisRequestConfig' => new Map<String, Object>{
+                        'analyzeQueryTextSentiment' => true
+                    }
+                },
                 'queryInput' => new Map<String,Object>{
                     'text' => new Map<String, Object>{
                         'text' => params.getInput(),
@@ -74,9 +79,10 @@ public with sharing class DialogFlowService extends ExternalNlpService {
         Map<String, ExternalNlpIntent> intentsMap = new Map<String, ExternalNlpIntent>();
         ExternalNlpIntent highestScoringExtIntent = null;
         Map<String, List<ExternalNlpEntity>> entitiesMap = new Map<String, List<ExternalNlpEntity>>();
+        Map<String, ExternalNlpSentiment> sentimentsMap = new Map<String, ExternalNlpSentiment>();
+        ExternalNlpSentiment highestScoringExtSentiment = null;
 
         for (HttpResponse response : responses) {
-        
             if(response.getStatusCode() != 200){ throw new ExternalNlpServiceException(
                 'Received unexpected response code : '+response.getStatusCode(),
                 ExternalNlpServiceExceptionCode.INVALID_HTTP_RESPONSE_CODE); }
@@ -89,6 +95,8 @@ public with sharing class DialogFlowService extends ExternalNlpService {
             // Named Entity Recognition
             detectEntities(bodyMap, entitiesMap);
 
+            // Sentiment Recognition
+            highestScoringExtSentiment = detectSentiments(bodyMap, sentimentsMap, highestScoringExtSentiment);
         }
 
         String highestConfidenceIntentName = null;
@@ -105,9 +113,22 @@ public with sharing class DialogFlowService extends ExternalNlpService {
             .setPredictedEntities(entitiesMap)
             .build();
 
+        String highestConfidenceSentimentName = null;
+        if (highestScoringExtSentiment != null && Math.abs(highestScoringExtSentiment.getConfidenceScore()) >= this.serviceParams.getSentimentThreshold()) {
+            highestConfidenceSentimentName = highestScoringExtSentiment.getName();
+        }
+
+        ExternalNlpPredictionSentimentResult sentimentPredResult = new ExternalNlpPredictionSentimentResult.Builder()
+            .setDocumentSentiment(new ExternalNlpDocumentSentiment.Builder()
+                .setHighestConfidenceSentimentName(highestConfidenceSentimentName)
+                .setPredictedSentiments(sentimentsMap)
+                .build())
+            .build();
+
         return new ExternalNlpPredictionResult.Builder()
             .setIntentResults(intentPredResult)
             .setEntityResults(entityPredResult)
+            .setSentimentResults(sentimentPredResult)
             .build();
     }
 
@@ -130,7 +151,6 @@ public with sharing class DialogFlowService extends ExternalNlpService {
             if (highestScoringExtIntent == null || intentDetectionConfidence > highestScoringExtIntent.getConfidenceScore()) {
                 highestScoringExtIntent = extIntent;
             }
-
         }
 
         return highestScoringExtIntent;
@@ -167,6 +187,46 @@ public with sharing class DialogFlowService extends ExternalNlpService {
             entitiesMap.put(parameterName, extEntities);
         }
 
+    }
+
+    private ExternalNlpSentiment detectSentiments(Map<String, Object> bodyMap, Map<String, ExternalNlpSentiment> sentimentsMap, ExternalNlpSentiment highestScoringExtSentiment) {
+        //https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values
+
+        Double sentimentConfidenceThreshold = this.serviceParams.getSentimentThreshold();
+
+        Map<String, Object> resultMap = (Map<String, Object>)bodyMap.get('sentimentAnalysisResult');
+        if (resultMap == null) { return highestScoringExtSentiment; }
+        Map<String, Object> textSentimentMap = (Map<String, Object>)resultMap.get('queryTextSentiment');
+        if (textSentimentMap == null) { return highestScoringExtSentiment; }
+
+        Double sentimentScore = (Double)textSentimentMap.get('score');
+        Double sentimentMagnitude = (Double)textSentimentMap.get('magnitude');
+
+        String sentimentName = 'neutral';
+        if (sentimentScore == 0) {
+            if (sentimentMagnitude > 0.2) { // TODO: Should be configurable
+                sentimentName = 'mixed';
+            }
+        } else {
+            if (sentimentScore > 0) {
+                sentimentName = 'positive';
+            } else {
+                sentimentName = 'negative';
+            }
+        }
+
+        ExternalNlpSentiment extSentiment = new ExternalNlpSentiment.Builder()
+                            .setName(sentimentName)
+                            .setConfidenceScore(sentimentScore)
+                            .setMagnitude(sentimentMagnitude)
+                            .build();
+        sentimentsMap.put(sentimentName, extSentiment);
+
+        if (highestScoringExtSentiment == null || sentimentConfidenceThreshold > Math.abs(highestScoringExtSentiment.getConfidenceScore())) {
+            highestScoringExtSentiment = extSentiment;
+        }
+
+        return highestScoringExtSentiment;
     }
 
     public override String getNormalizedText(String value) {
