@@ -109,6 +109,7 @@ public with sharing class WatsonNluHandler {
 
             String sentimentLabel = (String)respDocumentMap.get('label');
             Double sentimentScore = (Double)respDocumentMap.get('score');
+            Double absSentimentScore = Math.abs(sentimentScore);
 
             ExternalNlpSentiment extNlpSentiment = new ExternalNlpSentiment.Builder()
                                             .setName(sentimentLabel)
@@ -116,7 +117,7 @@ public with sharing class WatsonNluHandler {
                                             .build();
 
             sentimentsMap.put(sentimentLabel, extNlpSentiment);
-            if (sentimentScore > 0 && (highestScoringExtSentiment == null || sentimentScore > highestScoringExtSentiment.getConfidenceScore())) {
+            if (absSentimentScore > 0 && (highestScoringExtSentiment == null || absSentimentScore > Math.abs(highestScoringExtSentiment.getConfidenceScore()))) {
                 highestScoringExtSentiment = extNlpSentiment;
             }
 
@@ -127,7 +128,7 @@ public with sharing class WatsonNluHandler {
         }
 
         String highestConfidenceSentimentName = null;
-        if (highestScoringExtSentiment != null && highestScoringExtSentiment.getConfidenceScore() >= sentimentConfidenceThreshold) {
+        if (highestScoringExtSentiment != null && Math.abs(highestScoringExtSentiment.getConfidenceScore()) >= sentimentConfidenceThreshold) {
             highestConfidenceSentimentName = highestScoringExtSentiment.getName();
         }
 

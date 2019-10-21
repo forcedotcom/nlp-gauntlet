@@ -114,7 +114,7 @@ public with sharing class DialogFlowService extends ExternalNlpService {
             .build();
 
         String highestConfidenceSentimentName = null;
-        if (highestScoringExtSentiment != null && highestScoringExtSentiment.getConfidenceScore() >= this.serviceParams.getSentimentThreshold()) {
+        if (highestScoringExtSentiment != null && Math.abs(highestScoringExtSentiment.getConfidenceScore()) >= this.serviceParams.getSentimentThreshold()) {
             highestConfidenceSentimentName = highestScoringExtSentiment.getName();
         }
 
@@ -222,7 +222,7 @@ public with sharing class DialogFlowService extends ExternalNlpService {
                             .build();
         sentimentsMap.put(sentimentName, extSentiment);
 
-        if (highestScoringExtSentiment == null || sentimentConfidenceThreshold > highestScoringExtSentiment.getConfidenceScore()) {
+        if (highestScoringExtSentiment == null || sentimentConfidenceThreshold > Math.abs(highestScoringExtSentiment.getConfidenceScore())) {
             highestScoringExtSentiment = extSentiment;
         }
 
