@@ -8,11 +8,12 @@ You can leverage Custom Metadata Types to store your connection and model settin
 
 3- Enter the corresponding parameters for your External Nlp Service configuration. This is where you will store information like :
 
-- Provider Type
+- Service Definition (Select a registered service definition from the list)
 - Intent Confidence Threshold
 - NER Confidence Threshold
 - Sentiment Confidence Threshold
 - Additional parameters (comma separated values)
+
 
 Below is a sample of the parameteres use by a Microsoft Luis configuration.
 

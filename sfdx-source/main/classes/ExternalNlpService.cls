@@ -2,20 +2,18 @@ public abstract class ExternalNlpService {
 
     public final static Boolean DISABLE_DEBUG_LOGS = false;
 
-    protected final ExternalNlpServiceParameters serviceParams;
-
     // Must provide a concrete implementation for the following 
-    public abstract List<HttpRequest> getPredictionRequests(ExternalNlpPredictionRequestParameters params);
-    public abstract ExternalNlpPredictionResult getPredictionResult(ExternalNlpPredictionResultParameters params);
+    public abstract List<HttpRequest> getPredictionRequests(ExternalNlpServiceParameters serviceParams, ExternalNlpPredictionRequestParameters params);
+    public abstract ExternalNlpPredictionResult getPredictionResult(ExternalNlpServiceParameters serviceParams, ExternalNlpPredictionResultParameters params);
 
-    public ExternalNlpPredictionResult predict(String input, String language) {
+    public ExternalNlpPredictionResult predict(ExternalNlpServiceParameters serviceParams, String input, String language) {
         
         // Build request parameters
         ExternalNlpPredictionRequestParameters params = new ExternalNlpPredictionRequestParameters.Builder()
             .setInput(input)
             .setLanguage(language)
             .build();
-        List<HttpRequest> reqs = getPredictionRequests(params);
+        List<HttpRequest> reqs = getPredictionRequests(serviceParams, params);
 
         // Make callouts for the built requests and collect responses
         Http http = new Http();
@@ -36,7 +34,7 @@ public abstract class ExternalNlpService {
             .build();
 
         // Return prediction results
-        ExternalNlpPredictionResult result = getPredictionResult(resultParams);
+        ExternalNlpPredictionResult result = getPredictionResult(serviceParams, resultParams);
         if (result == null) {
             return null;
         }

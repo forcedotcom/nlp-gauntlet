@@ -3,14 +3,14 @@ private class TestExternalNlpWorkbenchCtrl {
     
     @isTest
     private static void test() {
-        Test.setMock(HttpCalloutMock.class, new DialogFlowAPICalloutMockImpl());
+        Test.setMock(HttpCalloutMock.class, new ExternalNlpMockAPICalloutMockImpl());
 
         Test.setCurrentPageReference(Page.ExternalNlpWorkbench);
         Test.startTest();
             ExternalNlpWorkbenchCtrl ctrl = new ExternalNlpWorkbenchCtrl();
 
-            List<SelectOption> serviceTypes = ctrl.getServiceTypes();
-            System.assert(serviceTypes.size() > 0, 'Expected at least 1 service type');
+            List<SelectOption> serviceDefinitions = ctrl.getServiceDefinitions();
+            System.assert(serviceDefinitions.size() > 0, 'Expected at least 1 service type');
             List<SelectOption> userLanguages = ctrl.getUserLanguages();
             System.assert(userLanguages.size() > 0, 'Expected at least 1 user language');
             List<SelectOption> timeZones = ctrl.getTimeZones();
@@ -22,7 +22,7 @@ private class TestExternalNlpWorkbenchCtrl {
             List<ExternalNlpWorkbenchCtrl.ModelSetting> modelSettings = ctrl.modelSettings;
             System.assert(modelSettings.size() > 0, 'Expected at least 1 endpoint setting');
 
-            ctrl.selectedServiceType = ExternalNlpServiceType.DIALOG_FLOW.name();
+            ctrl.selectedDefinitionName = 'ExternalNlpTest';
             ctrl.additionalParameters = 'session=12345';
             ctrl.inputText = 'i want to schedule an appointment for my tesla tomorrow';
             ctrl.language = 'en_US';
@@ -32,7 +32,7 @@ private class TestExternalNlpWorkbenchCtrl {
             ctrl.selectedSettingName = '-1';
 
             ExternalNlpWorkbenchCtrl.ModelSetting modelSetting = modelSettings.get(0);
-            modelSetting.namedCredentialKey = 'EinsteinAiAPI';
+            modelSetting.namedCredentialKey = 'ExternalNlpAPI';
             modelSetting.modelId = 'testModelId';
 
             Integer origModelSettingsSize = modelSettings.size();

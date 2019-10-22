@@ -73,6 +73,10 @@ This project will create some Sample Named Credentials in your org but you will 
 
     ```java
 
+        // Instantiate external nlp service
+        // Replace with your provider type (e.g. Wit_ai, Watson, Dialog_Flow, Luis)
+        ExternalNlpService extNlpService = ExternalNlpServiceFactory.makeNlpService('Einstein_ai');
+
         // Set model parameters
         List<ExternalNlpModelParameters> modelParams = new List<ExternalNlpModelParameters>{
             new ExternalNlpModelParameters.Builder()
@@ -90,14 +94,8 @@ This project will create some Sample Named Credentials in your org but you will 
             .setAdditionalParams(new Map<String, String>())
             .build();
 
-        // Instantiate external nlp service
-        // Replace with your provider type (e.g. WIT_AI, WATSON, DIALOG_FLOW, LUIS)
-        ExternalNlpService extNlpService = ExternalNlpServiceFactory.makeNlpService(
-                    ExternalNlpServiceType.EINSTEIN_AI,
-                    serviceParams);
-
         // Get predictions
-        ExternalNlpPredictionResult results = extNlpService.predict('Your text to be analyzed', 'en_US');
+        ExternalNlpPredictionResult results = extNlpService.predict(serviceParams, 'Your text to be analyzed', 'en_US');
 
         // Consume predictions
         System.debug(results.getIntentResults().getPredictedIntents());
