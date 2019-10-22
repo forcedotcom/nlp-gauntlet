@@ -1,20 +1,11 @@
 @isTest
 private class TestExternalNlpServiceFactory {
-    
-    @isTest
-    private static void testFactoryWithCustomMetadata() {
-        Test.startTest();
-            ExternalNLPService nlpService = ExternalNlpServiceFactory.makeNlpServiceFromCustomMetadata('testCMD');
-            System.assertNotEquals(null, nlpService);
-        Test.stopTest();
-    }
 
     @isTest
     private static void testFactoryWithParameters() {
         Test.startTest();
         ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(
-                    ExternalNlpServiceType.EINSTEIN_AI,
-                    getTestServiceParameters());
+                    ExternalNlpMockService.class);
             System.assertNotEquals(null, nlpService);
         Test.stopTest();
     }

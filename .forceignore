@@ -4,6 +4,7 @@
 
 **/*.profile-meta.xml
 **/*.md-meta.xml
+!**/External_Nlp_Service_Definition.*.md-meta.xml
 package.xml
 
 # LWC configuration files

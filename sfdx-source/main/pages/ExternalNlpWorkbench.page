@@ -152,8 +152,8 @@
                                         <apex:pageBlockSection columns="2" title="Configuration Parameters" collapsible="true" id="configSection">
                                             <apex:pageBlockSectionItem>
                                                 <apex:outputLabel value="Type" for="st"/>
-                                                <apex:selectList value="{!selectedServiceType}" required="true" size="1" id="st">
-                                                    <apex:selectOptions value="{!serviceTypes}"/>
+                                                <apex:selectList value="{!selectedDefinitionName}" required="true" size="1" id="st">
+                                                    <apex:selectOptions value="{!serviceDefinitions}"/>
                                                 </apex:selectList>
                                             </apex:pageBlockSectionItem>
 
