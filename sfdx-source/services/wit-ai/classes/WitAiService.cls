@@ -151,7 +151,7 @@ public with sharing class WitAiService extends ExternalNlpService {
 
     private ExternalNlpSentiment detectSentiments(ExternalNlpServiceParameters serviceParams, Map<String, Object> bodyMap, Map<String, ExternalNlpSentiment> sentimentsMap, ExternalNlpSentiment highestScoringExtSentiment) {
 
-        Double sentimentConfidenceThreshold = serviceParams.getSentimentThreshold();
+        if (serviceParams.getDisableSentimentDetection()) { return highestScoringExtSentiment; }
 
         Map<String, Object> entities = (Map<String, Object>)bodyMap.get('entities');
 
@@ -173,7 +173,7 @@ public with sharing class WitAiService extends ExternalNlpService {
                                     .build();
                 sentimentsMap.put(extSentiment.getName(), extSentiment);
 
-                if (highestScoringExtSentiment == null || sentimentConfidenceThreshold > highestScoringExtSentiment.getConfidenceScore()) {
+                if (highestScoringExtSentiment == null || sentimentDetectionConfidence > highestScoringExtSentiment.getConfidenceScore()) {
                     highestScoringExtSentiment = extSentiment;
                 }
             }

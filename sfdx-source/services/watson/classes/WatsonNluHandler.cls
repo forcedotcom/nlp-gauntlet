@@ -37,10 +37,10 @@ public with sharing class WatsonNluHandler {
         return req;
     }
 
-    public static ExternalNlpPredictionResult buildResult(List<Map<String, Object>> responseMap, Double sentimentConfidenceThreshold) {
+    public static ExternalNlpPredictionResult buildResult(List<Map<String, Object>> responseMap, Double sentimentConfidenceThreshold, Boolean disableSentimentDetection) {
         return new ExternalNlpPredictionResult.Builder()
             .setEmotionResults(getEmotionResults(responseMap))
-            .setSentimentResults(getSentimentResults(responseMap, sentimentConfidenceThreshold))
+            .setSentimentResults(getSentimentResults(responseMap, sentimentConfidenceThreshold, disableSentimentDetection))
             .build();
     }
 
@@ -94,7 +94,10 @@ public with sharing class WatsonNluHandler {
         return extPredEmotionResult;
     }
 
-    private static ExternalNlpPredictionSentimentResult getSentimentResults(List<Map<String, Object>> responseMap, Double sentimentConfidenceThreshold) {
+    private static ExternalNlpPredictionSentimentResult getSentimentResults(List<Map<String, Object>> responseMap, Double sentimentConfidenceThreshold, Boolean disableSentimentDetection) {
+        
+        if (disableSentimentDetection) { return null; }
+        
         Map<String, ExternalNlpSentiment> sentimentsMap = new Map<String, ExternalNlpSentiment>();
         
         ExternalNlpSentiment highestScoringExtSentiment = null;

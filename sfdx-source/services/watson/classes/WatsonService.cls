@@ -50,7 +50,8 @@ public with sharing class WatsonService extends ExternalNlpService {
             ,serviceParams.getDisableEntityExtraction());
         ExternalNlpPredictionResult toneResult = WatsonToneAnalyzerHandler.buildResult(requestBodyMap.get('tone'));
         ExternalNlpPredictionResult nluResult = WatsonNluHandler.buildResult(requestBodyMap.get('nlu')
-            ,serviceParams.getSentimentThreshold());
+            ,serviceParams.getSentimentThreshold()
+            ,serviceParams.getDisableSentimentDetection());
 
         return new ExternalNlpPredictionResult.Builder()
             .setIntentResults(intentNerResult.getIntentResults())

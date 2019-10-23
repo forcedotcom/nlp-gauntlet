@@ -42,11 +42,6 @@ public with sharing class DialogFlowService extends ExternalNlpService {
             endpoint += '/'+API_VERSION+'/projects/'+modelParams.getModelId()+'/agent/sessions/'+sessionId+':detectIntent';
 
             Map<String, Object> queryInputMap = new Map<String,Object>{
-                'queryParams' => new Map<String, Object>{
-                    'sentimentAnalysisRequestConfig' => new Map<String, Object>{
-                        'analyzeQueryTextSentiment' => true
-                    }
-                },
                 'queryInput' => new Map<String,Object>{
                     'text' => new Map<String, Object>{
                         'text' => params.getInput(),
@@ -54,6 +49,14 @@ public with sharing class DialogFlowService extends ExternalNlpService {
                     }
                 }
             };
+
+            if (!serviceParams.getDisableSentimentDetection()) {
+                queryInputMap.put('queryParams', new Map<String, Object>{
+                    'sentimentAnalysisRequestConfig' => new Map<String, Object>{
+                        'analyzeQueryTextSentiment' => true
+                    }
+                });
+            }
             
             String body = JSON.serialize(queryInputMap);
             HttpRequest req = new HttpRequest();
@@ -188,7 +191,7 @@ public with sharing class DialogFlowService extends ExternalNlpService {
     private ExternalNlpSentiment detectSentiments(ExternalNlpServiceParameters serviceParams, Map<String, Object> bodyMap, Map<String, ExternalNlpSentiment> sentimentsMap, ExternalNlpSentiment highestScoringExtSentiment) {
         //https://cloud.google.com/natural-language/docs/basics#interpreting_sentiment_analysis_values
 
-        Double sentimentConfidenceThreshold = serviceParams.getSentimentThreshold();
+        if (serviceParams.getDisableSentimentDetection()) { return highestScoringExtSentiment; }
 
         Map<String, Object> resultMap = (Map<String, Object>)bodyMap.get('sentimentAnalysisResult');
         if (resultMap == null) { return highestScoringExtSentiment; }
@@ -218,7 +221,7 @@ public with sharing class DialogFlowService extends ExternalNlpService {
                             .build();
         sentimentsMap.put(sentimentName, extSentiment);
 
-        if (highestScoringExtSentiment == null || sentimentConfidenceThreshold > Math.abs(highestScoringExtSentiment.getConfidenceScore())) {
+        if (highestScoringExtSentiment == null || Math.abs(sentimentScore) > Math.abs(highestScoringExtSentiment.getConfidenceScore())) {
             highestScoringExtSentiment = extSentiment;
         }
 

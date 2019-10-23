@@ -12,6 +12,7 @@ public with sharing class ExternalNlpServiceParameters {
     private final Map<String, String> additionalParams;
     private final Boolean disableIntentDetection;
     private final Boolean disableEntityExtraction;
+    private final Boolean disableSentimentDetection;
 
     public ExternalNlpServiceParameters(ExternalNlpServiceParameters.Builder builder) {
         this.intentThreshold = builder.intentThreshold;
@@ -21,6 +22,7 @@ public with sharing class ExternalNlpServiceParameters {
         this.additionalParams = builder.additionalParams;
         this.disableIntentDetection = builder.disableIntentDetection == null ? false : builder.disableIntentDetection;
         this.disableEntityExtraction = builder.disableEntityExtraction == null ? false : builder.disableEntityExtraction;
+        this.disableSentimentDetection = builder.disableSentimentDetection == null ? false : builder.disableSentimentDetection;
     }
 
     public Double getIntentThreshold() {
@@ -51,6 +53,10 @@ public with sharing class ExternalNlpServiceParameters {
         return this.disableEntityExtraction;
     }
 
+    public Boolean getDisableSentimentDetection() {
+        return this.disableSentimentDetection;
+    }
+
     public class Builder {
 
         private Double intentThreshold;
@@ -60,6 +66,7 @@ public with sharing class ExternalNlpServiceParameters {
         private List<ExternalNlpModelParameters> modelParams;
         private Boolean disableIntentDetection;
         private Boolean disableEntityExtraction;
+        private Boolean disableSentimentDetection;
 
         public Builder setIntentThreshold(Double intentThreshold){
             this.intentThreshold = intentThreshold;
@@ -93,6 +100,11 @@ public with sharing class ExternalNlpServiceParameters {
 
         public Builder setDisableEntityExtraction(Boolean disableEntityExtraction){
             this.disableEntityExtraction = disableEntityExtraction;
+            return this;
+        }
+
+        public Builder setDisableSentimentDetection(Boolean disableSentimentDetection){
+            this.disableSentimentDetection = disableSentimentDetection;
             return this;
         }
 

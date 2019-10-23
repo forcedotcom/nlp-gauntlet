@@ -11,7 +11,9 @@ public with sharing class EinsteinAiService extends ExternalNlpService {
 
         for(ExternalNlpModelParameters modelParams : serviceParams.getModelParams()) {
             if (modelParams.getModelId() == SENTIMENT_MODEL_NAME) {
-                reqs.add(EinsteinAiSentimentHandler.buildRequest(modelParams, params));
+                if (!serviceParams.getDisableSentimentDetection()) {
+                    reqs.add(EinsteinAiSentimentHandler.buildRequest(modelParams, params));
+                }
             } else if (!serviceParams.getDisableIntentDetection()) {
                 reqs.add(EinsteinAiIntentHandler.buildRequest(modelParams, params));
             }
