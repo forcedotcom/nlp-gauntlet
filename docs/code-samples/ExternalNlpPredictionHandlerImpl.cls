@@ -1,6 +1,14 @@
 public class ExternalNlpPredictionHandlerImpl implements NLPPredictions.PredictionHandler {
 
     /**
+    * By default, this handler maps external intents to bot intents based on direct name match
+    * If intents cannot be matched by name directly, the following map can be updated with the corresponding mappings.
+    */
+    private static final Map<String, String> CUSTOM_INTENT_MAPPINGS = new Map<String, String>{
+        'EXTERNAL_INTENT_NAME' => 'INTERNAL_INTENT_NAME'
+    };
+    
+    /**
     * By default, this handler maps external entities to bot entities based on direct name match
     * If entities in global Intent Sets are being used or if entities cannot be matched by name directly
     * The following map can be updated with the corresponding mappings.
@@ -26,7 +34,7 @@ public class ExternalNlpPredictionHandlerImpl implements NLPPredictions.Predicti
     * NOTE: Reading Custom metadata in PredictionHandler is not supported at the moment
     */
     private ExternalNLPService getExternalNLPService() {
-        return ExternalNlpServiceFactory.makeNlpService(WitAiService.class);
+        return ExternalNlpServiceFactory.makeNlpService(DialogFlowService.class);
     }
 
     /**
@@ -102,12 +110,21 @@ public class ExternalNlpPredictionHandlerImpl implements NLPPredictions.Predicti
                 List<NLPPredictions.MlIntentPrediction> mlIntentPredictions = new List<NLPPredictions.MlIntentPrediction>();
                 String highestConfidenceIntentName = extPredictionResult.getIntentResults().getHighestConfidenceIntentName();
                 // NOTE: This handler matches ml intents based on exact name match
-                if (predResponse.getAvailableMlIntents().get(highestConfidenceIntentName) != null) {
+                
+                // First try to auto-match ext intent to prediction intents based on name
+                NLPPredictions.MlIntent ctxMlIntent = predResponse.getAvailableMlIntents().get(highestConfidenceIntentName);
+ 
+                // If there are no matches, look for matches based on custom mappings
+                if (ctxMlIntent == null) {
+                    ctxMlIntent = predResponse.getAvailableMlIntents().get(CUSTOM_INTENT_MAPPINGS.get(highestConfidenceIntentName));
+                }
+                    
+                if (ctxMlIntent != null) {
                     ExternalNlpIntent extIntent = extIntentResultMap.get(highestConfidenceIntentName);
 
                     NLPPredictions.MlIntentPrediction predMlIntent = new NLPPredictions.MlIntentPrediction();
                     predMlIntent.setConfidence(extIntent.getConfidenceScore());
-                    predMlIntent.setIntentName(extIntent.getName());
+                    predMlIntent.setIntentName(ctxMlIntent.getName());
                     // NOTE: We only support 1 intent for now, so just setting the highest confidence one for now
                     mlIntentPredictions = new List<NLPPredictions.MlIntentPrediction>{predMlIntent};
                 }

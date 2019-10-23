@@ -181,7 +181,7 @@ public with sharing class LuisService extends ExternalNlpService {
 
         if (type.startsWith('builtin.')) {
             if (resolution != null && !resolution.isEmpty()) {
-                String entValue = (String)resolution.get('value');
+                String entValue = String.valueOf(resolution.get('value'));
                 if (String.isNotEmpty(entValue) && String.isNotBlank(entValue)) {
                     detectedValues.add(entValue);
                     return detectedValues;
@@ -198,11 +198,11 @@ public with sharing class LuisService extends ExternalNlpService {
 
                         //For Date and Date time entity type
                         if (valueMap.get('timex') != null) {
-                            timex = (String)valueMap.get('timex');
+                            timex = String.valueOf(valueMap.get('timex'));
                         }
 
                         if (valueMap.get('value') != null) {
-                            value = (String)valueMap.get('value');
+                            value = String.valueOf(valueMap.get('value'));
                         }
                         detectedValues.add(entityCompare(timex, value));
                     }
@@ -215,7 +215,7 @@ public with sharing class LuisService extends ExternalNlpService {
                 List<Object> values = (List<Object>)resolution.get('values');
                 if (values != null && !values.isEmpty()) {
                     for(Object o : values) {
-                        detectedValues.add((String)o);
+                        detectedValues.add(String.valueOf(o));
                     }
                     return detectedValues;
                 }

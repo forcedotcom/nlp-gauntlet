@@ -93,7 +93,7 @@ public with sharing class WatsonAssistantHandler {
         if (entities == null || entities.isEmpty()) { return; }
         for(Object o : entities) {
             Map<String, Object> entity = (Map<String, Object>)o;
-            String entityValue = (String)entity.get('value');
+            String entityValue = String.valueOf(entity.get('value'));
             Double entityDetectionConfidence = (Double)entity.get('confidence');
             String entityName = (String)entity.get('entity');
             if (entityDetectionConfidence < nerConfidenceThreshold) { continue; }

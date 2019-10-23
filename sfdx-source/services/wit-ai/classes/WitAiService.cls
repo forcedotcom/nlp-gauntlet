@@ -133,7 +133,7 @@ public with sharing class WitAiService extends ExternalNlpService {
             List<ExternalNlpEntity> extEntities = new List<ExternalNlpEntity>();
             for(Object o : entityObjects) {
                 Map<String, Object> entity = (Map<String, Object>)o;
-                String entityValue = (String)entity.get('value');
+                String entityValue = String.valueOf(entity.get('value'));
                 Double entityDetectionConfidence = (Double)entity.get('confidence');
                 if (entityDetectionConfidence >= nerConfidenceThreshold) {
                     extEntities.add(new ExternalNlpEntity.Builder()
@@ -164,7 +164,7 @@ public with sharing class WitAiService extends ExternalNlpService {
 
             for(Object o : sentiments) {
                 Map<String, Object> sentiment = (Map<String, Object>)o;
-                String sentimentName = (String)sentiment.get('value');
+                String sentimentName = String.valueOf(sentiment.get('value'));
                 Double sentimentDetectionConfidence = (Double)sentiment.get('confidence');
 
                 ExternalNlpSentiment extSentiment = new ExternalNlpSentiment.Builder()
