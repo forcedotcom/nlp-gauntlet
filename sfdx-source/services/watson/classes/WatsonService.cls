@@ -28,9 +28,22 @@ public with sharing class WatsonService extends ExternalNlpService {
         };
 
         for (HttpResponse response :  params.getHttpResponses()) {
-            if(response.getStatusCode() != 200){ throw new ExternalNlpServiceException(
+            if(response.getStatusCode() != 200){ 
+                if (response.getStatusCode() == 400) {
+                    try{
+                        Map<String, Object> errorMap = (Map<String, Object>)JSON.deserializeUntyped(response.getBody());
+                        String errorMessage = errorMap == null ? null : String.valueOf(errorMap.get('error'));
+                        // Skip responses with specific error messages
+                        if (errorMessage == 'unsupported text language: unknown') { continue;}
+                    } catch (Exception e){
+                        System.debug(e);
+                    }
+                }
+                throw new ExternalNlpServiceException(
                 'Received unexpected response code : '+response.getStatusCode(),
-                ExternalNlpServiceExceptionCode.INVALID_HTTP_RESPONSE_CODE); }
+                ExternalNlpServiceExceptionCode.INVALID_HTTP_RESPONSE_CODE); 
+                
+            }
 
             Map<String, Object> bodyMap = (Map<String, Object>)JSON.deserializeUntyped(response.getBody());
 
