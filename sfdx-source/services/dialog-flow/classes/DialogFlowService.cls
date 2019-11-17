@@ -250,11 +250,14 @@ public with sharing class DialogFlowService extends ExternalNlpService {
     public override DateTime getNormalizedDateTime(String value) {
         try {
             Map<String, Object> dateMap = (Map<String, Object>)JSON.deserializeUntyped(value);
-            DateTime dt = (DateTime) JSON.deserialize('"' + dateMap.get('date_time') + '"', DateTime.class);
-            return dt;
+            return (DateTime) JSON.deserialize('"' + dateMap.get('date_time') + '"', DateTime.class);
         } catch(Exception e) {
-            throw new ExternalNlpServiceException(getNormalizationExceptionMessage(value, e),
-                ExternalNlpServiceExceptionCode.NORMALIZED_VALUE_ERROR);
+            try {
+                return (DateTime) JSON.deserialize('"' + value + '"', DateTime.class);
+            } catch (Exception e2){
+                throw new ExternalNlpServiceException(getNormalizationExceptionMessage(value, e),
+                    ExternalNlpServiceExceptionCode.NORMALIZED_VALUE_ERROR);
+            }
         }
     }
 

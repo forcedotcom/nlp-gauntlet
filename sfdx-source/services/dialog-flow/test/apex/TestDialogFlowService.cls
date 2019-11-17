@@ -84,6 +84,7 @@ private class TestDialogFlowService {
             System.assertEquals(Double.valueOf('3'), nlpService.getNormalizedNumber('3'));
             System.assertEquals(Date.newinstance(2019, 7, 3), nlpService.getNormalizedDate('2019-07-03T12:00:00-07:00'));
             System.assertEquals(DateTime.newinstance(2019, 7, 3, 9, 15, 5), nlpService.getNormalizedDateTime('{"date_time": "2019-07-03T09:15:05-07:00"}'));
+            System.assertEquals(DateTime.newinstance(2019, 7, 3, 9, 15, 5), nlpService.getNormalizedDateTime('2019-07-03T09:15:05-07:00'));
         Test.stopTest();
     }
 
