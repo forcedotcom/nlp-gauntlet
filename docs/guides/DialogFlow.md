@@ -81,7 +81,7 @@ Go to Setup > Administer > Security Controls > Named Credentials
 
 Set the following parameters in the workbench and click the `Test` button :
 
-- Type :  `DIALOG_FLOW`
+- Type :  `Dialog Flow`
 - Additional Parameters : Dialog flow requires a sessionId, by default this sessionID is set to the current timestamp, to override set this field to `sessionId=12345`
 - Intent Confidence Threshold : Set to a value between 0 and 1, if empty it defaults to 0.7
 - NER Confidence Threshold : Set to a value between 0 and 1, if empty it defaults to 0.7

@@ -104,7 +104,7 @@ Go to Setup > Administer > Security Controls > Named Credentials
 
 Set the following parameters in the workbench and click the `Test` button :
 
-- Type :  `EINSTEIN_AI`
+- Type :  `Einstein.ai`
 - Additional Parameters : < empty >
 - Intent Confidence Threshold : Set to a value between 0 and 1, if empty it defaults to 0.7
 - NER Confidence Threshold : Set to a value between 0 and 1, if empty it defaults to 0.7
