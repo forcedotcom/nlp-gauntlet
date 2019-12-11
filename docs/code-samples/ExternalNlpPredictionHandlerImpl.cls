@@ -45,7 +45,7 @@ public class ExternalNlpPredictionHandlerImpl implements NLPPredictions.Predicti
         List<ExternalNlpModelParameters> modelParams = new List<ExternalNlpModelParameters>();
         modelParams.add(new ExternalNlpModelParameters.Builder()
             .setModelId('YOUR_MODEL_ID')
-            .setNamedCredentialKey('YOUR_NAMED_CREDENTIAL')
+            .setNamedCredentialKey('YOUR_NAMED_CREDENTIAL') // Case-sensitive
             .build());
 
         ExternalNlpServiceParameters serviceParams = new ExternalNlpServiceParameters.Builder()

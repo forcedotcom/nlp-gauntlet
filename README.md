@@ -74,14 +74,17 @@ This project will create some Sample Named Credentials in your org but you will 
     ```java
 
         // Instantiate external nlp service
-        // Replace with your provider type (e.g. Wit_ai, Watson, Dialog_Flow, Luis)
-        ExternalNlpService extNlpService = ExternalNlpServiceFactory.makeNlpService('Einstein_ai');
+        // Replace with your provider type (e.g. WitAi, Watson, DialogFlow, Luis)
+        ExternalNlpService extNlpService = ExternalNlpServiceFactory.makeNlpService(EinsteinAiService.class);
+
+        // Un-comment line below if instantiating from a Custom Metadata Definition
+        //ExternalNlpService extNlpService = ExternalNlpServiceFactory.makeNlpService('Einstein_ai');
 
         // Set model parameters
         List<ExternalNlpModelParameters> modelParams = new List<ExternalNlpModelParameters>{
             new ExternalNlpModelParameters.Builder()
                 .setModelId('Your Model/App/Skill/etc Id')
-                .setNamedCredentialKey('Your Named Credential Key')
+                .setNamedCredentialKey('Your Named Credential Key') // Case-sensitive name
                 .build()
         };
 
