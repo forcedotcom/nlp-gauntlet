@@ -83,8 +83,9 @@ public with sharing class WitAiService extends ExternalNlpService {
     private ExternalNlpIntent detectIntents(ExternalNlpServiceParameters serviceParams, Map<String, Object> bodyMap, Map<String, ExternalNlpIntent> intentsMap, ExternalNlpIntent highestScoringExtIntent) {
         if (serviceParams.getDisableIntentDetection()) { return highestScoringExtIntent; }
 
-        Map<String, Object> entities = (Map<String, Object>)bodyMap.get('entities');
+        List<Object> entities = (List<Object>)bodyMap.get('intents');
 
+        Object mostConfidentIntent = entities[0];
         for(String entityName : entities.keySet()) {
             // NOTE: This implementaiton expects an entity called 'intent' for intent detection
             // other entities will be considered to be NER entities
