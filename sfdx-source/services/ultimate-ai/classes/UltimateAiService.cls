@@ -85,14 +85,15 @@ public with sharing class UltimateAiService extends ExternalNlpService {
 
         List<Object> intents = (List<Object>)bodyMap.get('intents');
 
-        Object mostConfidentIntent = intents[0];
-
+        Object mostConfidentIntentObject = intents[0];
+        Map<String, Object> mostConfidentIntent = (Map<String, Object>)mostConfidentIntentObject;
         highestScoringExtIntent = new ExternalNlpIntent.Builder()
                 .setName((String)mostConfidentIntent.get('name'))
                 .setConfidenceScore((Double)mostConfidentIntent.get('confidence'))
                 .build();
 
-        for(Object intent : intents){
+        for(Object o : intents){
+            Map<String, Object> intent = (Map<String, Object>)o;
             ExternalNlpIntent extIntent = new ExternalNlpIntent.Builder()
                     .setName((String) intent.get('name'))
                     .setConfidenceScore((Double) intent.get('confidence'))
@@ -112,7 +113,8 @@ public with sharing class UltimateAiService extends ExternalNlpService {
         List<Object> entities = (List<Object>)bodyMap.get('entities');
         List<ExternalNlpEntity> extEntities = new List<ExternalNlpEntity>();
 
-        for(Object entity : entities) {
+        for(Object o : entities) {
+            Map<String, Object> entity = (Map<String, Object>)o;
             String entityName = String.valueOf(entity.get('name'));
             String entityValue = String.valueOf(entity.get('form'));
             Double entityDetectionConfidence = (Double)entity.get('confidence');
