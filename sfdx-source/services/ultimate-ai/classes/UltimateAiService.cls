@@ -1,4 +1,4 @@
-public with sharing class WitAiService extends ExternalNlpService {
+public with sharing class UltimateAiService extends ExternalNlpService {
     
     public override List<HttpRequest> getPredictionRequests(ExternalNlpServiceParameters serviceParams, ExternalNlpPredictionRequestParameters params) {
         List<HttpRequest> reqs = new List<HttpRequest>();
@@ -83,35 +83,16 @@ public with sharing class WitAiService extends ExternalNlpService {
     private ExternalNlpIntent detectIntents(ExternalNlpServiceParameters serviceParams, Map<String, Object> bodyMap, Map<String, ExternalNlpIntent> intentsMap, ExternalNlpIntent highestScoringExtIntent) {
         if (serviceParams.getDisableIntentDetection()) { return highestScoringExtIntent; }
 
-        List<Object> entities = (List<Object>)bodyMap.get('intents');
+        List<Object> intents = (List<Object>)bodyMap.get('intents');
 
-        Object mostConfidentIntent = entities[0];
-        for(String entityName : entities.keySet()) {
-            // NOTE: This implementaiton expects an entity called 'intent' for intent detection
-            // other entities will be considered to be NER entities
-            if (entityName != 'intent') { continue; }
+        Object mostConfidentIntent = intents[0];
 
-            List<Object> intents = (List<Object>)entities.get(entityName);
-            if (intents == null || intents.isEmpty()) { continue; }
+        ExternalNlpIntent mostConfidentExtIntent = new ExternalNlpIntent.Builder()
+                .setName((String)mostConfidentIntent.get('name'))
+                .setConfidenceScore((Double)mostConfidentIntent.get('confidence'))
+                .build();
 
-            for(Object o : intents) {
-                Map<String, Object> intent = (Map<String, Object>)o;
-                String intentName = (String)intent.get('value');
-                Double intentDetectionConfidence = (Double)intent.get('confidence');
-
-                ExternalNlpIntent extIntent = new ExternalNlpIntent.Builder()
-                                    .setName(intentName)
-                                    .setConfidenceScore(intentDetectionConfidence)
-                                    .build();
-                intentsMap.put(extIntent.getName(), extIntent);
-
-                if (highestScoringExtIntent == null || intentDetectionConfidence > highestScoringExtIntent.getConfidenceScore()) {
-                    highestScoringExtIntent = extIntent;
-                }
-            }
-        }
-
-        return highestScoringExtIntent;
+        return mostConfidentExtIntent;
     }
 
     private void detectEntities(ExternalNlpServiceParameters serviceParams, Map<String, Object> bodyMap, Map<String, List<ExternalNlpEntity>> entitiesMap) {
