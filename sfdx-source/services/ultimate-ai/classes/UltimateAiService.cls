@@ -87,12 +87,21 @@ public with sharing class UltimateAiService extends ExternalNlpService {
 
         Object mostConfidentIntent = intents[0];
 
-        ExternalNlpIntent mostConfidentExtIntent = new ExternalNlpIntent.Builder()
+        highestScoringExtIntent = new ExternalNlpIntent.Builder()
                 .setName((String)mostConfidentIntent.get('name'))
                 .setConfidenceScore((Double)mostConfidentIntent.get('confidence'))
                 .build();
 
-        return mostConfidentExtIntent;
+        for(Object intent : intents){
+            ExternalNlpIntent extIntent = new ExternalNlpIntent.Builder()
+                    .setName((String) intent.get('name'))
+                    .setConfidenceScore((Double) intent.get('confidence'))
+                    .build();
+
+            intentsMap.put(extIntent.getName(), extIntent);
+        }
+
+        return highestScoringExtIntent;
     }
 
     private void detectEntities(ExternalNlpServiceParameters serviceParams, Map<String, Object> bodyMap, Map<String, List<ExternalNlpEntity>> entitiesMap) {
@@ -100,28 +109,19 @@ public with sharing class UltimateAiService extends ExternalNlpService {
 
         Double nerConfidenceThreshold = serviceParams.getNerThreshold();
 
-        Map<String, Object> entities = (Map<String, Object>)bodyMap.get('entities');
+        List<Object> entities = (List<Object>)bodyMap.get('entities');
+        List<ExternalNlpEntity> extEntities = new List<ExternalNlpEntity>();
 
-        for(String entityName : entities.keySet()) {
-
-            if (entityName == 'intent' || entityName == 'sentiment') { continue; }
-
-            // NOTE: Make sure you assign role names for entities in wit to prevent overriding entires in the response map
-            List<Object> entityObjects = (List<Object>)entities.get(entityName);
-            if (entityObjects == null || entityObjects.isEmpty()) { continue; }
-
-            List<ExternalNlpEntity> extEntities = new List<ExternalNlpEntity>();
-            for(Object o : entityObjects) {
-                Map<String, Object> entity = (Map<String, Object>)o;
-                String entityValue = String.valueOf(entity.get('value'));
-                Double entityDetectionConfidence = (Double)entity.get('confidence');
-                if (entityDetectionConfidence >= nerConfidenceThreshold) {
-                    extEntities.add(new ExternalNlpEntity.Builder()
-                                                    .setName(entityName)
-                                                    .setValue(entityValue)
-                                                    .setConfidenceScore(entityDetectionConfidence)
-                                                    .build());
-                }
+        for(Object entity : entities) {
+            String entityName = String.valueOf(entity.get('name'));
+            String entityValue = String.valueOf(entity.get('value'));
+            Double entityDetectionConfidence = (Double)entity.get('confidence');
+            if (entityDetectionConfidence >= nerConfidenceThreshold) {
+                extEntities.add(new ExternalNlpEntity.Builder()
+                                                .setName(entityName)
+                                                .setValue(entityValue)
+                                                .setConfidenceScore(entityDetectionConfidence)
+                                                .build());
             }
             entitiesMap.put(entityName, extEntities);
 
@@ -130,38 +130,7 @@ public with sharing class UltimateAiService extends ExternalNlpService {
     }
 
     private ExternalNlpSentiment detectSentiments(ExternalNlpServiceParameters serviceParams, Map<String, Object> bodyMap, Map<String, ExternalNlpSentiment> sentimentsMap, ExternalNlpSentiment highestScoringExtSentiment) {
-
-        if (serviceParams.getDisableSentimentDetection()) { return highestScoringExtSentiment; }
-
-        Map<String, Object> entities = (Map<String, Object>)bodyMap.get('entities');
-
-        for(String entityName : entities.keySet()) {
-
-            if (entityName != 'sentiment') { continue; }
-
-            List<Object> sentiments = (List<Object>)entities.get(entityName);
-            if (sentiments == null || sentiments.isEmpty()) { continue; }
-
-            for(Object o : sentiments) {
-                Map<String, Object> sentiment = (Map<String, Object>)o;
-                String sentimentName = String.valueOf(sentiment.get('value'));
-                Double sentimentDetectionConfidence = (Double)sentiment.get('confidence');
-
-                ExternalNlpSentiment extSentiment = new ExternalNlpSentiment.Builder()
-                                    .setName(sentimentName)
-                                    .setConfidenceScore(sentimentDetectionConfidence)
-                                    .build();
-                sentimentsMap.put(extSentiment.getName(), extSentiment);
-
-                if (highestScoringExtSentiment == null || sentimentDetectionConfidence > highestScoringExtSentiment.getConfidenceScore()) {
-                    highestScoringExtSentiment = extSentiment;
-                }
-            }
-
-        }
-
         return highestScoringExtSentiment;
-
     }
 
 }
