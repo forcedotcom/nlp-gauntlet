@@ -114,7 +114,7 @@ public with sharing class UltimateAiService extends ExternalNlpService {
 
         for(Object entity : entities) {
             String entityName = String.valueOf(entity.get('name'));
-            String entityValue = String.valueOf(entity.get('value'));
+            String entityValue = String.valueOf(entity.get('form'));
             Double entityDetectionConfidence = (Double)entity.get('confidence');
             if (entityDetectionConfidence >= nerConfidenceThreshold) {
                 extEntities.add(new ExternalNlpEntity.Builder()
