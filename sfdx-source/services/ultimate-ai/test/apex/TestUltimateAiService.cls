@@ -3,8 +3,8 @@ private class TestWitAiService {
 
     @isTest
     private static void testGetPredictionRequest() {
-        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(WitAiService.class);
-        String input = 'i want to schedule an appointment for my Tesla tomorrow at 9 am';
+        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(UltimateAiService.class);
+        String input = 'message';
 
         ExternalNlpPredictionRequestParameters requestParams = new ExternalNlpPredictionRequestParameters.Builder()
             .setInput(input)
@@ -26,9 +26,9 @@ private class TestWitAiService {
 
     @isTest
     private static void testGetPredictionResult() {
-        Test.setMock(HttpCalloutMock.class, new WitAiAPICalloutMockImpl());
-        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(WitAiService.class);
-        String input = 'i want to schedule an appointment for my Tesla tomorrow at 9 am';
+        Test.setMock(HttpCalloutMock.class, new UltimateAiAPICalloutMockImpl());
+        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(UltimateAiService.class);
+        String input = 'message';
 
         ExternalNlpPredictionRequestParameters requestParams = new ExternalNlpPredictionRequestParameters.Builder()
             .setInput(input)
@@ -73,7 +73,7 @@ private class TestWitAiService {
 
     @isTest
     private static void testGetValidNormalizedValues() {
-        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(WitAiService.class);
+        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(UltimateAiService.class);
         Test.startTest();
             System.assertEquals(true, nlpService.getNormalizedBoolean('true'));
             System.assertEquals(false, nlpService.getNormalizedBoolean('false'));
@@ -86,7 +86,7 @@ private class TestWitAiService {
 
     @isTest
     private static void testGetInvalidNormalizedValues() {
-        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(WitAiService.class);
+        ExternalNlpService nlpService = ExternalNlpServiceFactory.makeNlpService(UltimateAiService.class);
         Test.startTest();
             try{
                 nlpService.getNormalizedBoolean(null);
