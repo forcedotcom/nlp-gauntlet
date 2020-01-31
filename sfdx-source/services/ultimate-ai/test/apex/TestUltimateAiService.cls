@@ -1,5 +1,5 @@
 @isTest
-private class TestWitAiService {
+private class TestUltimateAiService {
 
     @isTest
     private static void testGetPredictionRequest() {
@@ -20,8 +20,8 @@ private class TestWitAiService {
         HttpRequest req = reqs.get(0);
         System.assertNotEquals(null, req);
         System.assertNotEquals(null, req.getBody());
-        System.assert(req.getEndpoint().contains(EncodingUtil.urlEncode(input, 'UTF-8')), 'input not part of payload');
-        System.assertEquals('GET', req.getMethod());
+        System.assert(req.getBody().contains(input), 'input not part of payload');
+        System.assertEquals('POST', req.getMethod());
     }
 
     @isTest
@@ -50,25 +50,19 @@ private class TestWitAiService {
             ExternalNlpPredictionResult result = nlpService.getPredictionResult(getTestServiceParameters(), resultParams);
         Test.stopTest();
         
-        System.assertEquals(1, result.getIntentResults().getPredictedIntents().size());
-        System.assertEquals('Make_Appointment', result.getIntentResults().getHighestConfidenceIntentName());
-        ExternalNlpIntent extIntent = result.getIntentResults().getPredictedIntents().get('Make_Appointment');
+        System.assertEquals(5, result.getIntentResults().getPredictedIntents().size());
+        System.assertEquals('Intent1', result.getIntentResults().getHighestConfidenceIntentName());
+        ExternalNlpIntent extIntent = result.getIntentResults().getPredictedIntents().get('Intent1');
         System.assertNotEquals(null, extIntent);
-        System.assertEquals('Make_Appointment', extIntent.getName());
-        System.assertEquals(Double.valueOf('0.64313723530264'), extIntent.getConfidenceScore());
+        System.assertEquals('Intent1', extIntent.getName());
+        System.assertEquals(Double.valueOf('0.89'), extIntent.getConfidenceScore());
         System.assertEquals(2, result.getEntityResults().getPredictedEntities().size());
         
-        List<ExternalNlpEntity> extEntities = result.getEntityResults().getPredictedEntities().get('Car_Make');
+        List<ExternalNlpEntity> extEntities = result.getEntityResults().getPredictedEntities().get('city');
         System.assertNotEquals(null, extEntities);
-        System.assertEquals('Car_Make', extEntities.get(0).getName());
-        System.assertEquals('Tesla', extEntities.get(0).getValue());
-        System.assertEquals(Double.valueOf('0.88855520066342'), extEntities.get(0).getConfidenceScore());
-
-        System.assertEquals(1, result.getSentimentResults().getDocumentSentiment().getPredictedSentiments().size());
-        System.assertEquals('positive', result.getSentimentResults().getDocumentSentiment().getHighestConfidenceSentimentName());
-        Map<String, ExternalNlpSentiment> extSentimentsMap = result.getSentimentResults().getDocumentSentiment().getPredictedSentiments();
-        System.assertEquals('positive', extSentimentsMap.get('positive').getName());
-        System.assertEquals(Double.valueOf('0.89855520066342'), extSentimentsMap.get('positive').getConfidenceScore());
+        System.assertEquals('city', extEntities.get(0).getName());
+        System.assertEquals('Tampere', extEntities.get(0).getValue());
+        System.assertEquals(Double.valueOf('0.9'), extEntities.get(0).getConfidenceScore());
     }
 
     @isTest
@@ -119,7 +113,7 @@ private class TestWitAiService {
         List<ExternalNlpModelParameters> modelParams = new List<ExternalNlpModelParameters>();
 
         modelParams.add(new ExternalNlpModelParameters.Builder()
-            .setModelId(null)
+            .setModelId('123456789')
             .setNamedCredentialKey('testKey')
             .build());
 

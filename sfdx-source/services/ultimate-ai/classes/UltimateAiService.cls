@@ -7,12 +7,20 @@ public with sharing class UltimateAiService extends ExternalNlpService {
             String endpoint = 'callout:'+modelParams.getNamedCredentialKey();
             endpoint += '/api/intents';
             String message = EncodingUtil.urlEncode(params.getInput(), 'UTF-8');
-            String botId = '{!$Credential.Username}';
+            String botId = modelParams.getModelId();
             HttpRequest req = new HttpRequest();
             req.setEndpoint(endpoint);
             req.setMethod('POST');
-            req.setHeader('authorization', 'Bearer {!$Credential.Password}');
-            req.setBody('{"message":'+message+', "botId":'+botId+'}');
+            req.setHeader('authorization', '{!$Credential.Password}');
+            req.setHeader('Content-Type', 'application/json');
+
+            JSONGenerator gen = JSON.createGenerator(true);
+            gen.writeStartObject();
+            gen.writeStringField('message', message);
+            gen.writeStringField('botId', botId);
+            gen.writeEndObject();
+            String jsonS = gen.getAsString();
+            req.setBody(jsonS);
             reqs.add(req);
         }
 

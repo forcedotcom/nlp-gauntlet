@@ -1,4 +1,4 @@
-public with sharing class WitAiAPICalloutMockImpl implements HttpCalloutMock {
+public with sharing class UltimateAiAPICalloutMockImpl implements HttpCalloutMock {
 
    public HTTPResponse respond(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
@@ -8,13 +8,17 @@ public with sharing class WitAiAPICalloutMockImpl implements HttpCalloutMock {
         if(req.getEndpoint().contains('/api/intents')){
             body = '{'+
                         '"intents": ['+
-                            '{"confidence": 0.08208152651786804,"name": "Mitä osaat"},'+
-                            '{"confidence": 0.2620494067668915,"name": "Kikki hiiri"},'+
-                            '{"confidence": 0.3722572326660156,"name": "Example"},'+
-                            '{"confidence": 0.06704168021678925,"name": "Submitted to2"},'+
-                            '{"confidence": 0.058408066630363464,"name": "What's up?"}'+
+                            '{"confidence": 0.89,"name": "Intent1"},'+
+                            '{"confidence": 0.08,"name": "Intent2"},'+
+                            '{"confidence": 0.02,"name": "Intent3"},'+
+                            '{"confidence": 0.01,"name": "Intent4"},'+
+                            '{"confidence": 0.01,"name": "Intent5"}'+
                         '],'+
-                        '"entities": []'+'
+                        '"entities": ['+
+                            '{"confidence":0.9,"form":"Tampere","name":"city"},'+
+                            '{"confidence":1.0,"form":"123456789","name":"orderNumber"}'+
+                            ''+
+                        ']'+
                     '}';
         }
         res.setBody(body);
