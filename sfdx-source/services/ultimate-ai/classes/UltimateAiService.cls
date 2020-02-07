@@ -6,7 +6,7 @@ public with sharing class UltimateAiService extends ExternalNlpService {
         for(ExternalNlpModelParameters modelParams : serviceParams.getModelParams()) {
             String endpoint = 'callout:'+modelParams.getNamedCredentialKey();
             endpoint += '/api/intents';
-            String message = EncodingUtil.urlEncode(params.getInput(), 'UTF-8');
+            String message = params.getInput();
             String botId = modelParams.getModelId();
             HttpRequest req = new HttpRequest();
             req.setEndpoint(endpoint);
