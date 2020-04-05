@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>External Nlp Mock Model Service</label>
+    <protected>true</protected>
+    <values>
+        <field>Additional_Parameters__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>External_Nlp_Service_Definition__c</field>
+        <value xsi:type="xsd:string">External_Nlp_Mock_Model</value>
+    </values>
+    <values>
+        <field>Intent_Confidence_Threshold__c</field>
+        <value xsi:type="xsd:double">0.7</value>
+    </values>
+    <values>
+        <field>NER_Confidence_Threshold__c</field>
+        <value xsi:type="xsd:double">0.7</value>
+    </values>
+    <values>
+        <field>Sentiment_Confidence_Threshold__c</field>
+        <value xsi:type="xsd:double">0.7</value>
+    </values>
+</CustomMetadata>

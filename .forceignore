@@ -4,6 +4,8 @@
 
 **/*.profile-meta.xml
 **/*.md-meta.xml
+!**/External_Nlp_Service_Setting.External_Nlp_Mock_Model_Service.md-meta.xml
+!**/External_Nlp_Model_Setting.External_Nlp_Mock_Model.md-meta.xml
 !**/External_Nlp_Service_Definition.*.md-meta.xml
 package.xml
 

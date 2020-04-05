@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>External Nlp Mock Model Info</label>
+    <protected>true</protected>
+    <values>
+        <field>External_Nlp_Service_Setting__c</field>
+        <value xsi:type="xsd:string">External_Nlp_Mock_Model_Service</value>
+    </values>
+    <values>
+        <field>Model_Id__c</field>
+        <value xsi:type="xsd:string">ExternalNlpMockModelAPI</value>
+    </values>
+    <values>
+        <field>Named_Credential_Name__c</field>
+        <value xsi:type="xsd:string">REPLACE_WITH_MOCK_NAMED_CREDENTIAL_NAME</value>
+    </values>
+</CustomMetadata>
