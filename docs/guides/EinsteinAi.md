@@ -47,7 +47,7 @@
 
 4d- Rotate your key
 
-- Go to `/apex/ExternalNlpEinsteinAiKeyMgmt`
+- Go to `/apex/EinsteinAiKeyMgmt`
 - In the `Key Information` section, enter the following:
 
 - Einstein.ai Email : < the email associated your Einstein.ai account >
@@ -68,7 +68,7 @@
 
 4e - Validate rotation
 
-- Go to `/apex/ExternalNlpEinsteinAiKeyMgmt`
+- Go to `/apex/EinsteinAiKeyMgmt`
 
 - In the `Key Information` section, enter the following:
 - Einstein.ai Email : < the email associated your Einstein.ai account >
@@ -116,4 +116,4 @@ Set the following parameters in the workbench and click the `Test` button :
 
 - Language : Your desired language
 - Time Zone : Your desired timezone
-- Input Text : The text you would like to get predictions on. 
+- Input Text : The text you would like to get predictions on.
