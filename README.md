@@ -15,9 +15,9 @@ To install using a pre-built package, use the installation links provided [here]
 
 ### Non-Scratch Org quick deploy
 
-<a href="https://githubsfdeploy.herokuapp.com?owner=forcedotcom&repo=nlp-gauntlet" target="_blank">
+<a href="https://githubsfdeploy.herokuapp.com">
   <img alt="Deploy to Salesforce"
-       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
 ### Scratch Org quick deploy
