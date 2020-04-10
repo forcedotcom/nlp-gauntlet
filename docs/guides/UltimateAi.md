@@ -1,4 +1,4 @@
-#ultimate.ai setup
+# ultimate.ai setup
 
 1 - ultimate.ai for now does not have a self service account creation. If you don't have an account through having been in contact with ultimate.ai, contact ultimate.ai with email at support@ultimate.ai
 
