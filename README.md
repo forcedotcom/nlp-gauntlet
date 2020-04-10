@@ -1,3 +1,5 @@
+![CI](https://github.com/forcedotcom/nlp-gauntlet/workflows/CI/badge.svg)
+
 # Nlp Gauntlet
 
 The Nlp Gauntlet was designed to hold any number of external Natural Language Processing services, better known as NLP services. When used in combination, their already impressive powers make the wearer able to do anything they want.
