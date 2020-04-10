@@ -5,9 +5,13 @@
         "ForceComPlatform"
     ],
     "settings": {
-        "orgPreferenceSettings": {
-            "s1DesktopEnabled": true,
-            "selfSetPasswordInApi" : true
+        "lightningExperienceSettings": {
+            "enableS1DesktopEnabled": true
+        },
+        "securitySettings": {
+            "passwordPolicies": {
+                "enableSetPasswordInApi": true
+            }
         }
     }
 }
