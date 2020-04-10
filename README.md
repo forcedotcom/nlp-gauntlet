@@ -78,6 +78,7 @@ This project will create some Sample Named Credentials in your org but you will 
     - [IBM Watson](docs/guides/Watson.md)
     - [Microsoft Luis](docs/guides/Luis.md)
     - [Mock Model Service](docs/guides/MockModel.md)
+    - [Ultimate.ai](docs/guides/UltimateAi.md)
 
 2. Next, go to `/apex/ExternalNlpWorkbench` in your browser to verify connectivity and run some tests.
 
