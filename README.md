@@ -12,9 +12,18 @@ The goal of this project is to make integration and testing of external NLP serv
 
 To install using a pre-built package, use the installation links provided [here](https://github.com/forcedotcom/nlp-gauntlet/releases)
 
+
+### Non-Scratch Org quick deploy
+
+<a href="https://githubsfdeploy.herokuapp.com?owner=forcedotcom&repo=nlp-gauntlet" target="_blank">
+  <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/src/main/webapp/resources/img/deploy.png">
+</a>
+
 ### Scratch Org quick deploy
 
 [![Deploy](https://deploy-to-sfdx.com/dist/assets/images/DeployToSFDX.svg)](https://deploy-to-sfdx.com/)
+
 
 ### Scrtatch Org sfdx cli deploy
 
