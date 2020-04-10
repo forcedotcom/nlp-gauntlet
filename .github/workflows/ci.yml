@@ -1,0 +1,38 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: npm install sfdx-cli
+    - name: Authenticate DevHub
+      run: |
+        echo "${{ secrets.SALESFORCE_JWT_SECRET_KEY }}" > server.key
+        node_modules/sfdx-cli/bin/run force:auth:jwt:grant --clientid ${{ secrets.SALESFORCE_CONSUMER_KEY }} --jwtkeyfile server.key --username ${{ secrets.SALESFORCE_DEVHUB_USERNAME}} --setdefaultdevhubusername --setalias devhub
+    - name: Create Scratch Org
+      run: node_modules/sfdx-cli/bin/run force:org:create --targetdevhubusername devhub --setdefaultusername --definitionfile config/project-scratch-def.json --setalias ciorg --durationdays 1
+    - name: Deploy source
+      run: node_modules/sfdx-cli/bin/run force:source:push
+    - name: Run Apex test
+      run: node_modules/sfdx-cli/bin/run force:apex:test:run --codecoverage --resultformat human
+    - name: Delete Scratch Org
+      run: node_modules/sfdx-cli/bin/run force:org:delete --noprompt
