@@ -82,11 +82,11 @@ This project will create some Sample Named Credentials in your org but you will 
 
 2. Next, go to `/apex/ExternalNlpWorkbench` in your browser to verify connectivity and run some tests.
 
-    The Nlp Gauntlet Workbench tool allows you test out different model configurations. You can also load configurations from [Custom Metadata Types](docs/guides/CustomMd.md)  in your org.
+    The Nlp Gauntlet Workbench tool allows you to test out different model configurations. You can also load saved configurations from [Custom Metadata Types](docs/guides/CustomMd.md) in your org.
 
     ![Nlp Gauntlet Workbench](/docs/images/gauntlet-workbench/gauntlet-workbench.gif?raw=true)
 
-3. Once you've verified connection and confirmed your models are working correctly. You can consume these predictions from your apex code :
+3. Once you've verified the connection and confirmed your models are working correctly. You can consume these predictions from your apex code :
 
     ```java
 
