@@ -26,7 +26,31 @@ For example, here's the named credential created for Wit.ai. Create one that con
 
 For example : `sfdx-source/main/services/my-new-service`
 
-### 4- Create a new class that implements the `ExternalNlpService` interface and overrides the `getPredictionRequests` and `getPredictionResult` methods. 
+### 4- Update `sfdx-project.json` to include a new package directory
+
+Add a new package directory entry that points to your service directory
+
+```
+{
+    "path": "sfdx-source/services/my-new-service",
+    "default": false,
+    "package": "NLP Gauntlet - my-new-service",
+    "versionName": "Spring 20",
+    "versionDescription": "NLP Gauntlet My New Service integration",
+    "versionNumber": "1.0.0.NEXT",
+    "definitionFile": "config/project-scratch-def.json",
+    "dependencies": [
+        {
+            "package": "NLP Gauntlet - core",
+            "versionNumber": "1.0.0.LATEST"
+        }
+    ]
+}
+```
+
+* NOTE: version AND dependencies properties will be used for creating second generation unlocked packages of your new service *
+
+### 5- Create a new class that implements the `ExternalNlpService` interface and overrides the `getPredictionRequests` and `getPredictionResult` methods. 
 
 For example :
 
@@ -106,7 +130,7 @@ public with sharing class MyNewService extends ExternalNlpService {
 
 ```
 
-### 5- Add a new External Nlp Service Definition Custom Metadata entry for your service
+### 6- Add a new External Nlp Service Definition Custom Metadata entry for your service
 
 In order to test your service through `/apex/ExternalNlpWorkbench` or to instantiate using Custom Metadata, you must first create a definition entry to register your new service class.
 
@@ -114,25 +138,25 @@ In order to test your service through `/apex/ExternalNlpWorkbench` or to instant
 - Click the `New` button to add a new service definition
 - Add a Label and Developer Name for your Service and enter the name of your new Apex Class in the `Apex Class` field then Save.
 
-### 6- Try it out in the External Nlp Workbench
+### 7- Try it out in the External Nlp Workbench
 
 Go to `/apex/ExternalNlpWorkbench`, under the `Type` field you should see your new service definition listed. 
 Select that option to make sure your Apex class is used, and set the additional parameters to test your integration.
 Including the named credential you created in Step 1.
 
-### 7- Add tests
+### 8- Add tests
 
 Make sure you add tests for your service by adding a `test` directory under your service folder.
 
 For example : `sfdx-source/main/services/my-new-service/test/apex/MyNewServiceTest.cls`
 
-### 8- Add Documentation
+### 9- Add Documentation
 
 Make sure you include documentation on how to setup an account with your service and how to configure a named credential to work with your service.
 
 Please add a markdown file under `/docs/guides/MyNewService.md`, you can use other markdown files in this folder as reference.
 
-### 9 - Submit your PR
+### 10 - Submit your PR
 
 Please submit a pull request from your fork with all of the changes described above
 
