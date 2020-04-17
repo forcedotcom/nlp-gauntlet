@@ -26,8 +26,8 @@ jobs:
     - name: Extract branch name
       shell: bash
       run: |
-        echo ${GITHUB_REF}
-        BRANCH_NAME = echo "${GITHUB_REF}" | awk -F / '{ print $(NF-1) }' # d
+        echo ${HEAD_BRANCH}
+        BRANCH_NAME=$(eval echo "${HEAD_BRANCH}" | awk -F / '{ print $(NF-1) }' # d)
         echo "##[set-output name=branch;]$(echo $BRANCH_NAME)"
       id: extract_branch
       if: github.event_name == 'pull_request'
