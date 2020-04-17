@@ -22,9 +22,9 @@ For example, here's the named credential created for Wit.ai. Create one that con
 - Allow Merge Fields in HTTP Body : Un-Checked
 
 
-### 3- Create a new folder under `sfdx-source/main/services`
+### 3- Create a new folder under `sfdx-source/services`
 
-For example : `sfdx-source/main/services/my-new-service`
+For example : `sfdx-source/services/my-new-service`
 
 ### 4- Update `sfdx-project.json` to include a new package directory
 
