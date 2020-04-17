@@ -1,10 +1,23 @@
 public with sharing class ExternalNlpMockModelService extends ExternalNlpService {
     
+    public static String getNamespacePrefix() {
+        String namespacePrefix = null;
+        String[] classNameParts = String.valueOf(ExternalNlpMockModelService.class).split('\\.', 2);
+        if(classNameParts.size() > 1) {
+            Type classType = Type.forName(classNameParts[0], classNameParts[1]);
+            if(classType == ExternalNlpMockModelService.class) {
+                namespacePrefix = classNameParts[0];
+            }
+        }
+        return namespacePrefix; 
+    }
+
     public override List<HttpRequest> getPredictionRequests(ExternalNlpServiceParameters serviceParams, ExternalNlpPredictionRequestParameters params) {
         List<HttpRequest> reqs = new List<HttpRequest>();
-
+        String currentNamespace = getNamespacePrefix();
+        String namespacePath = currentNamespace != null ? currentNamespace+'/' : '';
         for(ExternalNlpModelParameters modelParams : serviceParams.getModelParams()) {
-            String endpoint = 'callout:'+modelParams.getNamedCredentialKey()+'/services/apexrest/';
+            String endpoint = 'callout:'+modelParams.getNamedCredentialKey()+'/services/apexrest/'+namespacePath;
             endpoint += modelParams.getModelId();
 
             Map<String, Object> queryInputMap = new Map<String, Object>();

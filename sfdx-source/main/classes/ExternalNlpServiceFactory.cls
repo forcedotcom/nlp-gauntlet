@@ -1,10 +1,10 @@
-public with sharing class ExternalNlpServiceFactory {
+global with sharing class ExternalNlpServiceFactory {
 
-    public static ExternalNlpService makeNlpService(String serviceDefinitionName){
+    global static ExternalNlpService makeNlpService(String serviceDefinitionName){
         return makeNlpService(getApexTypeForDefinition(serviceDefinitionName));
     }
 
-    public static ExternalNlpService makeNlpService(System.Type apexType){
+    global static ExternalNlpService makeNlpService(System.Type apexType){
         try {
             return (ExternalNlpService)apexType.newInstance();
         } catch (Exception e){

@@ -1,37 +1,37 @@
-public with sharing class ExternalNlpPredictionIntentResult {
+global with sharing class ExternalNlpPredictionIntentResult {
 
     private final Map<String, ExternalNlpIntent> predictedIntents;
     private final String highestConfidenceIntentName;
 
-    public ExternalNlpPredictionIntentResult(ExternalNlpPredictionIntentResult.Builder builder) {
+    global ExternalNlpPredictionIntentResult(ExternalNlpPredictionIntentResult.Builder builder) {
         this.predictedIntents = builder.predictedIntents;
         this.highestConfidenceIntentName = builder.highestConfidenceIntentName;
     }
 
-    public Map<String, ExternalNlpIntent> getPredictedIntents() {
+    global Map<String, ExternalNlpIntent> getPredictedIntents() {
         return this.predictedIntents;
     }
 
-    public String getHighestConfidenceIntentName() {
+    global String getHighestConfidenceIntentName() {
         return this.highestConfidenceIntentName;
     }
 
-    public class Builder {
+    global class Builder {
 
         private Map<String, ExternalNlpIntent> predictedIntents;
         private String highestConfidenceIntentName;
 
-        public Builder setPredictedIntents(Map<String, ExternalNlpIntent> predictedIntents){
+        global Builder setPredictedIntents(Map<String, ExternalNlpIntent> predictedIntents){
             this.predictedIntents = predictedIntents;
             return this;
         }
 
-        public Builder setHighestConfidenceIntentName(String intentName){
+        global Builder setHighestConfidenceIntentName(String intentName){
             this.highestConfidenceIntentName = intentName;
             return this;
         }
 
-        public ExternalNlpPredictionIntentResult build(){
+        global ExternalNlpPredictionIntentResult build(){
             return new ExternalNlpPredictionIntentResult(this);
         }
 

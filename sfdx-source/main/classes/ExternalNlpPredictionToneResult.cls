@@ -1,25 +1,25 @@
-public with sharing class ExternalNlpPredictionToneResult {
+global with sharing class ExternalNlpPredictionToneResult {
 
     private final ExternalNlpDocumentTone documentTone;
 
-    public ExternalNlpPredictionToneResult(ExternalNlpPredictionToneResult.Builder builder) {
+    global ExternalNlpPredictionToneResult(ExternalNlpPredictionToneResult.Builder builder) {
         this.documentTone = builder.documentTone;
     }
 
-    public ExternalNlpDocumentTone getDocumentTone() {
+    global ExternalNlpDocumentTone getDocumentTone() {
         return this.documentTone;
     }
 
-    public class Builder {
+    global class Builder {
 
         private ExternalNlpDocumentTone documentTone;
 
-        public Builder setDocumentTone(ExternalNlpDocumentTone documentTone){
+        global Builder setDocumentTone(ExternalNlpDocumentTone documentTone){
             this.documentTone = documentTone;
             return this;
         }
 
-        public ExternalNlpPredictionToneResult build(){
+        global ExternalNlpPredictionToneResult build(){
             return new ExternalNlpPredictionToneResult(this);
         }
 

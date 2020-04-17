@@ -1,11 +1,11 @@
-public with sharing class ExternalNlpHttpFormBuilder {
+global with sharing class ExternalNlpHttpFormBuilder {
     //  The boundary is alligned so it doesn't produce padding characters when base64 encoded.
     private final static string Boundary = '1ff13444ed8140c7a32fc4e6451aa76d';
 
     /**
     *  Returns the request's content type for multipart/form-data requests.
     */
-    public static string GetContentType() {
+    global static string GetContentType() {
         return 'multipart/form-data; charset="UTF-8"; boundary="' + Boundary + '"';
     }
 
@@ -32,7 +32,7 @@ public with sharing class ExternalNlpHttpFormBuilder {
     /**
     *  Write a boundary between parameters to the form's body.
     */
-    public static string WriteBoundary() {
+    global static string WriteBoundary() {
         string value = '--' + Boundary + '\r\n';
         blob valueBlob = blob.valueOf(value);
 
@@ -42,7 +42,7 @@ public with sharing class ExternalNlpHttpFormBuilder {
     /**
     *  Write a boundary at the end of the form's body.
     */
-    public static string WriteBoundary(
+    global static string WriteBoundary(
         EndingType ending) {
         string value = '';
 
@@ -74,7 +74,7 @@ public with sharing class ExternalNlpHttpFormBuilder {
     /**
     *  Wirte a file to the form's body.
     */
-    public static WriteFileResult WriteFile(
+    global static WriteFileResult WriteFile(
         string key,
         string value,
         string mimeType,
@@ -114,7 +114,7 @@ public with sharing class ExternalNlpHttpFormBuilder {
     /**
     *  Write a key-value pair to the form's body.
     */
-    public static string WriteBodyParameter(
+    global static string WriteBodyParameter(
         string key,
         string value) {
         string contentDisposition = 'Content-Disposition: form-data; name="' + key + '"';
@@ -134,11 +134,11 @@ public with sharing class ExternalNlpHttpFormBuilder {
     /**
     *  Helper class containing the result of writing a file's blob to the form's body.
     */
-    public class WriteFileResult {
-        public final string Content { get; private set; }
-        public final EndingType EndingType { get; private set; }
+    global class WriteFileResult {
+        global final string Content { get; private set; }
+        global final EndingType EndingType { get; private set; }
 
-        public WriteFileResult(
+        global WriteFileResult(
             string content,
             EndingType ending) {
             this.Content = content;
@@ -149,7 +149,7 @@ public with sharing class ExternalNlpHttpFormBuilder {
     /**
     *  Helper enum indicating how a file's base64 padding was replaced.
     */
-    public enum EndingType {
+    global enum EndingType {
         Cr,
         CrLf,
         None

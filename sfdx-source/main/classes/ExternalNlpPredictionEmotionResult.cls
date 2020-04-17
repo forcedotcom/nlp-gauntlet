@@ -1,25 +1,25 @@
-public with sharing class ExternalNlpPredictionEmotionResult {
+global with sharing class ExternalNlpPredictionEmotionResult {
 
     private final ExternalNlpDocumentEmotion documentEmotion;
 
-    public ExternalNlpPredictionEmotionResult(ExternalNlpPredictionEmotionResult.Builder builder) {
+    global ExternalNlpPredictionEmotionResult(ExternalNlpPredictionEmotionResult.Builder builder) {
         this.documentEmotion = builder.documentEmotion;
     }
 
-    public ExternalNlpDocumentEmotion getDocumentEmotion() {
+    global ExternalNlpDocumentEmotion getDocumentEmotion() {
         return this.documentEmotion;
     }
 
-    public class Builder {
+    global class Builder {
 
         private ExternalNlpDocumentEmotion documentEmotion;
 
-        public Builder setDocumentEmotion(ExternalNlpDocumentEmotion documentEmotion){
+        global Builder setDocumentEmotion(ExternalNlpDocumentEmotion documentEmotion){
             this.documentEmotion = documentEmotion;
             return this;
         }
 
-        public ExternalNlpPredictionEmotionResult build(){
+        global ExternalNlpPredictionEmotionResult build(){
             return new ExternalNlpPredictionEmotionResult(this);
         }
 

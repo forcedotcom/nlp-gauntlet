@@ -1,4 +1,4 @@
-public with sharing class ExternalNlpPredictionResult {
+global with sharing class ExternalNlpPredictionResult {
 
     private final ExternalNlpPredictionIntentResult intentResults;
     private final ExternalNlpPredictionEntityResult entityResults;
@@ -6,7 +6,7 @@ public with sharing class ExternalNlpPredictionResult {
     private final ExternalNlpPredictionEmotionResult emotionResults;
     private final ExternalNlpPredictionSentimentResult sentimentResults;
 
-    public ExternalNlpPredictionResult(ExternalNlpPredictionResult.Builder builder) {
+    global ExternalNlpPredictionResult(ExternalNlpPredictionResult.Builder builder) {
         this.intentResults = builder.intentResults;
         this.entityResults = builder.entityResults;
         this.toneResults = builder.toneResults;
@@ -14,27 +14,27 @@ public with sharing class ExternalNlpPredictionResult {
         this.sentimentResults = builder.sentimentResults;
     }
 
-    public ExternalNlpPredictionIntentResult getIntentResults() {
+    global ExternalNlpPredictionIntentResult getIntentResults() {
         return this.intentResults;
     }
 
-    public ExternalNlpPredictionEntityResult getEntityResults() {
+    global ExternalNlpPredictionEntityResult getEntityResults() {
         return this.entityResults;
     }
 
-    public ExternalNlpPredictionToneResult getToneResults() {
+    global ExternalNlpPredictionToneResult getToneResults() {
         return this.toneResults;
     }
 
-    public ExternalNlpPredictionEmotionResult getEmotionResults() {
+    global ExternalNlpPredictionEmotionResult getEmotionResults() {
         return this.emotionResults;
     }
 
-    public ExternalNlpPredictionSentimentResult getSentimentResults() {
+    global ExternalNlpPredictionSentimentResult getSentimentResults() {
         return this.sentimentResults;
     }
 
-    public class Builder {
+    global class Builder {
 
         private ExternalNlpPredictionIntentResult intentResults;
         private ExternalNlpPredictionEntityResult entityResults;
@@ -42,32 +42,32 @@ public with sharing class ExternalNlpPredictionResult {
         private ExternalNlpPredictionEmotionResult emotionResults;
         private ExternalNlpPredictionSentimentResult sentimentResults;
 
-        public Builder setIntentResults(ExternalNlpPredictionIntentResult intentResults) {
+        global Builder setIntentResults(ExternalNlpPredictionIntentResult intentResults) {
             this.intentResults = intentResults;
             return this;
         }
 
-        public Builder setEntityResults(ExternalNlpPredictionEntityResult entityResults) {
+        global Builder setEntityResults(ExternalNlpPredictionEntityResult entityResults) {
             this.entityResults = entityResults;
             return this;
         }
 
-        public Builder setToneResults(ExternalNlpPredictionToneResult toneResults) {
+        global Builder setToneResults(ExternalNlpPredictionToneResult toneResults) {
             this.toneResults = toneResults;
             return this;
         }
 
-        public Builder setEmotionResults(ExternalNlpPredictionEmotionResult emotionResults) {
+        global Builder setEmotionResults(ExternalNlpPredictionEmotionResult emotionResults) {
             this.emotionResults = emotionResults;
             return this;
         }
 
-        public Builder setSentimentResults(ExternalNlpPredictionSentimentResult sentimentResults) {
+        global Builder setSentimentResults(ExternalNlpPredictionSentimentResult sentimentResults) {
             this.sentimentResults = sentimentResults;
             return this;
         }
 
-        public ExternalNlpPredictionResult build(){
+        global ExternalNlpPredictionResult build(){
             return new ExternalNlpPredictionResult(this);
         }
 

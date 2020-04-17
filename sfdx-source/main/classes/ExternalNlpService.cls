@@ -1,13 +1,14 @@
-public abstract class ExternalNlpService {
-
-    public final static Boolean DISABLE_DEBUG_LOGS = false;
+global abstract class ExternalNlpService {
 
     // Must provide a concrete implementation for the following 
-    public abstract List<HttpRequest> getPredictionRequests(ExternalNlpServiceParameters serviceParams, ExternalNlpPredictionRequestParameters params);
-    public abstract ExternalNlpPredictionResult getPredictionResult(ExternalNlpServiceParameters serviceParams, ExternalNlpPredictionResultParameters params);
+    global abstract List<HttpRequest> getPredictionRequests(ExternalNlpServiceParameters serviceParams, ExternalNlpPredictionRequestParameters params);
+    global abstract ExternalNlpPredictionResult getPredictionResult(ExternalNlpServiceParameters serviceParams, ExternalNlpPredictionResultParameters params);
 
-    public ExternalNlpPredictionResult predict(ExternalNlpServiceParameters serviceParams, String input, String language) {
+    global ExternalNlpPredictionResult predict(ExternalNlpServiceParameters serviceParams, String input, String language) {
         
+        External_Nlp_Custom_Settings__c cs = External_Nlp_Custom_Settings__c.getInstance();
+        Boolean debugModeEnabled = cs != null && cs.Debug_Mode__c;
+
         // Build request parameters
         ExternalNlpPredictionRequestParameters params = new ExternalNlpPredictionRequestParameters.Builder()
             .setInput(input)
@@ -20,7 +21,7 @@ public abstract class ExternalNlpService {
         List<HTTPResponse> responses = new List<HTTPResponse>();
         for(HttpRequest req : reqs) {
             HTTPResponse res = http.send(req);
-            if (!DISABLE_DEBUG_LOGS) {
+            if (debugModeEnabled) {
                 System.debug(' -- BEGIN RAW RESPONSE --');
                 System.debug(res.getBody());
                 System.debug(' -- END RAW RESPONSE --');
@@ -38,7 +39,7 @@ public abstract class ExternalNlpService {
         if (result == null) {
             return null;
         }
-        if (!DISABLE_DEBUG_LOGS) {
+        if (debugModeEnabled) {
             System.debug(' -- BEGIN PARSED RESPONSE --');
             System.debug(JSON.serializePretty(result));
             System.debug(' -- END PARSED RESPONSE --');
@@ -48,7 +49,7 @@ public abstract class ExternalNlpService {
 
     // A default implementation for value normalization is provided here
     // Normalized value methods can be overwritten by concrete implementations if needed
-    public virtual DateTime getNormalizedDateTime(String value) {
+    global virtual DateTime getNormalizedDateTime(String value) {
         try {
             DateTime dt = (DateTime) JSON.deserialize('"' + value + '"', DateTime.class);
             return dt;
@@ -58,7 +59,7 @@ public abstract class ExternalNlpService {
         }
     }
     
-    public virtual Date getNormalizedDate(String value) {
+    global virtual Date getNormalizedDate(String value) {
         try {
             return Date.valueOf(value);
         } catch(Exception e) {
@@ -67,7 +68,7 @@ public abstract class ExternalNlpService {
         }
     }
 
-    public virtual Double getNormalizedNumber(String value) {
+    global virtual Double getNormalizedNumber(String value) {
         try {
             return Double.valueOf(value);
         } catch(Exception e) {
@@ -76,7 +77,7 @@ public abstract class ExternalNlpService {
         }
     }
     
-    public virtual Boolean getNormalizedBoolean(String value){
+    global virtual Boolean getNormalizedBoolean(String value){
         try {
             return Boolean.valueOf(value);
         } catch(Exception e) {
@@ -85,7 +86,7 @@ public abstract class ExternalNlpService {
         }
     }
 
-    public virtual String getNormalizedText(String value) {
+    global virtual String getNormalizedText(String value) {
         try {
             return value;
         } catch(Exception e) {
@@ -94,7 +95,7 @@ public abstract class ExternalNlpService {
         }
     }
 
-    protected String getNormalizationExceptionMessage(String value, Exception e){
+    global protected String getNormalizationExceptionMessage(String value, Exception e){
         return 'Unable to normalize value ' + value + ' ' +e.getMessage();
     }
 
