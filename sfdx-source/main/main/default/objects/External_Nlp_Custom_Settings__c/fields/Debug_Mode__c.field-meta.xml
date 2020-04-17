@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Debug_Mode__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Enable debug logs for http callouts</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enable debug logs for http callouts</inlineHelpText>
+    <label>Debug Mode</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

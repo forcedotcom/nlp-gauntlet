@@ -1,37 +1,37 @@
-public with sharing class ExternalNlpDocumentEmotion {
+global with sharing class ExternalNlpDocumentEmotion {
 
     private final Map<String, ExternalNlpEmotion> predictedEmotions;
     private final String highestConfidenceEmotionName;
 
-    public ExternalNlpDocumentEmotion(ExternalNlpDocumentEmotion.Builder builder) {
+    global ExternalNlpDocumentEmotion(ExternalNlpDocumentEmotion.Builder builder) {
         this.predictedEmotions = builder.predictedEmotions;
         this.highestConfidenceEmotionName = builder.highestConfidenceEmotionName;
     }
 
-    public Map<String, ExternalNlpEmotion> getPredictedEmotions() {
+    global Map<String, ExternalNlpEmotion> getPredictedEmotions() {
         return this.predictedEmotions;
     }
 
-    public String getHighestConfidenceEmotionName() {
+    global String getHighestConfidenceEmotionName() {
         return this.highestConfidenceEmotionName;
     }
 
-    public class Builder {
+    global class Builder {
 
         private Map<String, ExternalNlpEmotion> predictedEmotions;
         private String highestConfidenceEmotionName;
 
-        public Builder setPredictedEmotions(Map<String, ExternalNlpEmotion> predictedEmotions){
+        global Builder setPredictedEmotions(Map<String, ExternalNlpEmotion> predictedEmotions){
             this.predictedEmotions = predictedEmotions;
             return this;
         }
 
-        public Builder setHighestConfidenceEmotionName(String emotionName){
+        global Builder setHighestConfidenceEmotionName(String emotionName){
             this.highestConfidenceEmotionName = emotionName;
             return this;
         }
 
-        public ExternalNlpDocumentEmotion build(){
+        global ExternalNlpDocumentEmotion build(){
             return new ExternalNlpDocumentEmotion(this);
         }
 
