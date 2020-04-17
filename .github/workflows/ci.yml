@@ -15,7 +15,7 @@ jobs:
 
   integrate:
     runs-on: ubuntu-latest
-    #if: startsWith(github.ref, 'ci/') == true
+    if: startsWith(github.head_ref, 'ci/') == true
 
     steps:
     - uses: actions/checkout@v2
@@ -26,8 +26,7 @@ jobs:
     - name: Extract branch name
       shell: bash
       run: |
-        echo ${HEAD_BRANCH}
-        echo "##[set-output name=branch;]echo ${HEAD_BRANCH}"
+        echo "##[set-output name=branch;]$(echo ${HEAD_BRANCH})"
       id: extract_branch
       if: github.event_name == 'pull_request'
 
