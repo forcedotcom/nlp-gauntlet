@@ -15,7 +15,7 @@ jobs:
 
   integrate:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'ci/') == true
+    #if: startsWith(github.ref, 'ci/') == true
 
     steps:
     - uses: actions/checkout@v2
