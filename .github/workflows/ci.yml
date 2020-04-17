@@ -25,6 +25,7 @@ jobs:
     - name: Install Dependencies
       run: npm install sfdx-cli
     - name: Authenticate DevHub
+      shell: bash
       env:
         SALESFORCE_JWT_SECRET_KEY: ${{ secrets.SALESFORCE_JWT_SECRET_KEY }}
         SALESFORCE_CONSUMER_KEY: ${{ secrets.SALESFORCE_CONSUMER_KEY }}
@@ -52,9 +53,9 @@ jobs:
     - name: Install Dependencies
       run: npm install sfdx-cli
     - name: Extract branch name
-          shell: bash
-          run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-          id: extract_branch
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
     - name: Validate branch name
       run: |
         echo "${{ steps.extract_branch.outputs.branch }}"
