@@ -25,7 +25,6 @@ jobs:
     - name: Install Dependencies
       run: npm install sfdx-cli
     - name: Authenticate DevHub
-      shell: bash
       env:
         SALESFORCE_JWT_SECRET_KEY: ${{ secrets.SALESFORCE_JWT_SECRET_KEY }}
         SALESFORCE_CONSUMER_KEY: ${{ secrets.SALESFORCE_CONSUMER_KEY }}
