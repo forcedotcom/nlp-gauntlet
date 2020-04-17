@@ -24,10 +24,8 @@ jobs:
 
     - name: Extract branch name
       shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${HEAD_BRANCH})"
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF})"
       id: extract_branch
-      env:
-        HEAD_BRANCH: ${{ github.head_ref }}
       if: github.event_name == 'pull_request'
 
     - name: Validate branch name
@@ -44,6 +42,9 @@ jobs:
         echo "$SALESFORCE_JWT_SECRET_KEY" > server.key
         node_modules/sfdx-cli/bin/run force:auth:jwt:grant --clientid $SALESFORCE_CONSUMER_KEY --jwtkeyfile server.key --username $SALESFORCE_DEVHUB_USERNAME --setdefaultdevhubusername --setalias devhub
 
+    - name: Create Scratch Org
+      run: node_modules/sfdx-cli/bin/run force:org:create --targetdevhubusername devhub --setdefaultusername --definitionfile config/project-scratch-def.json --setalias cipkgorg --durationdays 1
+
     - name: Increment package version number
       run: |
         PACKAGE_VERSION_JSON="$(eval node_modules/sfdx-cli/bin/run force:package:version:list --concise --released --packages \"NLP Gauntlet - Mock\" --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
@@ -57,5 +58,24 @@ jobs:
         if [ -z $MINOR_VERSION ]; then MINOR_VERSION=0; fi;
         if [ -z $PATCH_VERSION ]; then PATCH_VERSION=0; fi;
         if [ "$IS_RELEASED" == "true" ]; then MINOR_VERSION=$(($MINOR_VERSION+1)); fi;
-        VERSION_NUMBER="$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION.$BUILD_VERSION"
-        echo $VERSION_NUMBER
+        echo "##[set-output name=number;]$(echo ${MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION.$BUILD_VERSION"})"
+        echo "Version Number : ${{ steps.version.outputs.number }}"
+      id: version
+
+    - name: Create packaged version
+      run: |
+        export PACKAGE_VERSION_ID="$(eval node_modules/sfdx-cli/bin/run force:package:version:create --package \"NLP Gauntlet - Mock\" --versionnumber ${{ steps.version.outputs.number }} --installationkeybypass --skipvalidation  --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        echo "##[set-output name=versionid;]$(echo ${GITHUBPACKAGE_VERSION_ID_REF})"
+        echo "Version Id : ${{ steps.package.outputs.versionid }}"
+      id: package
+
+    - name: Install package in scratch org
+      run: |
+        node_modules/sfdx-cli/bin/run force:package:list
+        node_modules/sfdx-cli/bin/run force:package:install --package ${{ steps.package.outputs.versionid }} --wait 10 --publishwait 10 --noprompt
+
+    - name: Generate password and Get username information
+      run: |
+        node_modules/sfdx-cli/bin/run force:user:password:generate
+        SCRATCH_ORG_USERNAME="$(eval node_modules/sfdx-cli/bin/run force:user:display --json | jq -r '.result.username')"
+        echo "$SCRATCH_ORG_USERNAME"
