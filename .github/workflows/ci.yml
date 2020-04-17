@@ -43,3 +43,19 @@ jobs:
       run: node_modules/sfdx-cli/bin/run force:apex:test:run --codecoverage --resultformat human
     - name: Delete Scratch Org
       run: node_modules/sfdx-cli/bin/run force:org:delete --noprompt
+
+  integrate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: npm install sfdx-cli
+    - name: Extract branch name
+          shell: bash
+          run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          id: extract_branch
+    - name: Validate branch name
+      run: |
+        echo "${{ steps.extract_branch.outputs.branch }}"
