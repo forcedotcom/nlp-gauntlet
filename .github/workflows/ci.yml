@@ -13,38 +13,6 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
-  build:
-    needs: integrate
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-
-    - name: Install Dependencies
-      run: npm install sfdx-cli
-    - name: Authenticate DevHub
-      shell: bash
-      env:
-        SALESFORCE_JWT_SECRET_KEY: ${{ secrets.SALESFORCE_JWT_SECRET_KEY }}
-        SALESFORCE_CONSUMER_KEY: ${{ secrets.SALESFORCE_CONSUMER_KEY }}
-        SALESFORCE_DEVHUB_USERNAME: ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
-      run: |
-        echo "$SALESFORCE_JWT_SECRET_KEY" > server.key
-        node_modules/sfdx-cli/bin/run force:auth:jwt:grant --clientid $SALESFORCE_CONSUMER_KEY --jwtkeyfile server.key --username $SALESFORCE_DEVHUB_USERNAME --setdefaultdevhubusername --setalias devhub
-    - name: Create Scratch Org
-      run: node_modules/sfdx-cli/bin/run force:org:create --targetdevhubusername devhub --setdefaultusername --definitionfile config/project-scratch-def.json --setalias ciorg --durationdays 1
-    - name: Deploy source
-      run: node_modules/sfdx-cli/bin/run force:source:push
-    - name: Assign Permission Set to Scratch Org Default User
-      run: node_modules/sfdx-cli/bin/run force:user:permset:assign --permsetname External_Nlp_Admin
-    - name: Run Tests
-      run: node_modules/sfdx-cli/bin/run force:apex:test:run --codecoverage --resultformat human
-    - name: Delete Scratch Org
-      run: node_modules/sfdx-cli/bin/run force:org:delete --noprompt
-
   integrate:
     runs-on: ubuntu-latest
 
