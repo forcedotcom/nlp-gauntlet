@@ -51,8 +51,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install Dependencies
-      run: npm install sfdx-cli
     - name: Extract branch name
       shell: bash
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
@@ -64,5 +62,5 @@ jobs:
       run: |
         echo "Pull request's base branch is: ${BASE_BRANCH}"
       env:
-        BASE_BRANCH: ${{ github.base_ref }}
+        BASE_BRANCH: ${{ github.head_ref }}
       if: github.event_name == 'pull_request'
