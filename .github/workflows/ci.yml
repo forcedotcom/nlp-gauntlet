@@ -13,9 +13,40 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'integrate/') == false
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - name: Install Dependencies
+      run: npm install sfdx-cli
+    - name: Authenticate DevHub
+      shell: bash
+      env:
+        SALESFORCE_JWT_SECRET_KEY: ${{ secrets.SALESFORCE_JWT_SECRET_KEY }}
+        SALESFORCE_CONSUMER_KEY: ${{ secrets.SALESFORCE_CONSUMER_KEY }}
+        SALESFORCE_DEVHUB_USERNAME: ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
+      run: |
+        echo "$SALESFORCE_JWT_SECRET_KEY" > server.key
+        node_modules/sfdx-cli/bin/run force:auth:jwt:grant --clientid $SALESFORCE_CONSUMER_KEY --jwtkeyfile server.key --username $SALESFORCE_DEVHUB_USERNAME --setdefaultdevhubusername --setalias devhub
+    - name: Create Scratch Org
+      run: node_modules/sfdx-cli/bin/run force:org:create --targetdevhubusername devhub --setdefaultusername --definitionfile config/project-scratch-def.json --setalias ciorg --durationdays 1
+    - name: Deploy source
+      run: node_modules/sfdx-cli/bin/run force:source:push
+    - name: Assign Permission Set to Scratch Org Default User
+      run: node_modules/sfdx-cli/bin/run force:user:permset:assign --permsetname External_Nlp_Admin
+    - name: Run Tests
+      run: node_modules/sfdx-cli/bin/run force:apex:test:run --codecoverage --resultformat human
+    - name: Delete Scratch Org
+      run: node_modules/sfdx-cli/bin/run force:org:delete --noprompt
+
   integrate:
     runs-on: ubuntu-latest
-    if: startsWith(github.head_ref, 'ci/') == true
+    if: startsWith(github.head_ref, 'integrate/') == true
 
     steps:
     - uses: actions/checkout@v2
@@ -23,16 +54,18 @@ jobs:
     - name: Install Dependencies
       run: npm install sfdx-cli
 
+    # TODO: Parse package name
     - name: Extract branch name
       shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_HEAD_REF})"
+      run: echo "##[set-output name=package;]$(echo ${GITHUB_HEAD_REF})"
       id: extract_branch
       if: github.event_name == 'pull_request'
 
+    # TODO: Validate package name against current package directories
     - name: Validate branch name
       run: |
-        echo "${{ steps.extract_branch.outputs.branch }}"
-        if [[${{ steps.extract_branch.outputs.branch }} != test]]; then echo \"Error: Invalid branch package name, should be integrate/package/feature\" && exit 1 fi;
+        echo "${{ steps.extract_branch.outputs.package }}"
+        if [["${{ steps.extract_branch.outputs.package }}" != test]]; then echo \"Error: Invalid branch package name, should be integrate/package/feature\" && exit 1 fi;
 
     - name: Authenticate DevHub
       shell: bash
@@ -49,7 +82,7 @@ jobs:
 
     - name: Increment package version number
       run: |
-        PACKAGE_VERSION_JSON="$(eval node_modules/sfdx-cli/bin/run force:package:version:list --concise --released --packages \"NLP Gauntlet - ${{ steps.extract_branch.outputs.branch }}\" --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
+        PACKAGE_VERSION_JSON="$(eval node_modules/sfdx-cli/bin/run force:package:version:list --concise --released --packages \"NLP Gauntlet - ${{ steps.extract_branch.outputs.package }}\" --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
         echo $PACKAGE_VERSION_JSON
         IS_RELEASED=$(jq -r '.IsReleased?' <<< $PACKAGE_VERSION_JSON)
         MAJOR_VERSION=$(jq -r '.MajorVersion?' <<< $PACKAGE_VERSION_JSON)
@@ -66,7 +99,7 @@ jobs:
 
     - name: Create packaged version
       run: |
-        export PACKAGE_VERSION_ID="$(eval node_modules/sfdx-cli/bin/run force:package:version:create --package \"NLP Gauntlet - ${{ steps.extract_branch.outputs.branch }}\" --versionnumber ${{ steps.version.outputs.number }} --installationkeybypass --skipvalidation  --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        export PACKAGE_VERSION_ID="$(eval node_modules/sfdx-cli/bin/run force:package:version:create --package \"NLP Gauntlet - ${{ steps.extract_branch.outputs.package }}\" --versionnumber ${{ steps.version.outputs.number }} --installationkeybypass --skipvalidation  --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
         echo "##[set-output name=versionid;]$(echo ${GITHUBPACKAGE_VERSION_ID_REF})"
         echo "Version Id : ${{ steps.package.outputs.versionid }}"
       id: package
