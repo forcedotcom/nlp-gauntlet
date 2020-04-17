@@ -132,5 +132,3 @@ This project will create some Sample Named Credentials in your org but you will 
 ## Adding a new service
 
 To add a new service to the nlp gauntlet follow the steps provided in this [guide](/docs/guides/NewServiceGuide.md)
-
-### test
