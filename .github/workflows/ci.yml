@@ -15,6 +15,7 @@ jobs:
 
   integrate:
     runs-on: ubuntu-latest
+    if: startWith(github.ref, 'integrate/') == true
 
     steps:
     - uses: actions/checkout@v2
@@ -24,13 +25,14 @@ jobs:
 
     - name: Extract branch name
       shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF})"
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF} | awk -F / '{ print $(NF-1) }' # d)"
       id: extract_branch
       if: github.event_name == 'pull_request'
 
     - name: Validate branch name
       run: |
         echo "${{ steps.extract_branch.outputs.branch }}"
+        if [[${{ steps.extract_branch.outputs.branch }} != test]]; then echo \"Error: Invalid branch package name, should be integrate/package/feature\" && exit 1 fi;
 
     - name: Authenticate DevHub
       shell: bash
@@ -47,7 +49,7 @@ jobs:
 
     - name: Increment package version number
       run: |
-        PACKAGE_VERSION_JSON="$(eval node_modules/sfdx-cli/bin/run force:package:version:list --concise --released --packages \"NLP Gauntlet - mock\" --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
+        PACKAGE_VERSION_JSON="$(eval node_modules/sfdx-cli/bin/run force:package:version:list --concise --released --packages \"NLP Gauntlet - ${{ steps.extract_branch.outputs.branch }}\" --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
         echo $PACKAGE_VERSION_JSON
         IS_RELEASED=$(jq -r '.IsReleased?' <<< $PACKAGE_VERSION_JSON)
         MAJOR_VERSION=$(jq -r '.MajorVersion?' <<< $PACKAGE_VERSION_JSON)
@@ -64,7 +66,7 @@ jobs:
 
     - name: Create packaged version
       run: |
-        export PACKAGE_VERSION_ID="$(eval node_modules/sfdx-cli/bin/run force:package:version:create --package \"NLP Gauntlet - mock\" --versionnumber ${{ steps.version.outputs.number }} --installationkeybypass --skipvalidation  --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        export PACKAGE_VERSION_ID="$(eval node_modules/sfdx-cli/bin/run force:package:version:create --package \"NLP Gauntlet - ${{ steps.extract_branch.outputs.branch }}\" --versionnumber ${{ steps.version.outputs.number }} --installationkeybypass --skipvalidation  --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
         echo "##[set-output name=versionid;]$(echo ${GITHUBPACKAGE_VERSION_ID_REF})"
         echo "Version Id : ${{ steps.package.outputs.versionid }}"
       id: package
