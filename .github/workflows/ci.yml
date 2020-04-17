@@ -47,7 +47,7 @@ jobs:
 
     - name: Increment package version number
       run: |
-        PACKAGE_VERSION_JSON="$(eval node_modules/sfdx-cli/bin/run force:package:version:list --concise --released --packages \"NLP Gauntlet - Mock\" --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
+        PACKAGE_VERSION_JSON="$(eval node_modules/sfdx-cli/bin/run force:package:version:list --concise --released --packages \"NLP Gauntlet - mock\" --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
         echo $PACKAGE_VERSION_JSON
         IS_RELEASED=$(jq -r '.IsReleased?' <<< $PACKAGE_VERSION_JSON)
         MAJOR_VERSION=$(jq -r '.MajorVersion?' <<< $PACKAGE_VERSION_JSON)
@@ -64,7 +64,7 @@ jobs:
 
     - name: Create packaged version
       run: |
-        export PACKAGE_VERSION_ID="$(eval node_modules/sfdx-cli/bin/run force:package:version:create --package \"NLP Gauntlet - Mock\" --versionnumber ${{ steps.version.outputs.number }} --installationkeybypass --skipvalidation  --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        export PACKAGE_VERSION_ID="$(eval node_modules/sfdx-cli/bin/run force:package:version:create --package \"NLP Gauntlet - mock\" --versionnumber ${{ steps.version.outputs.number }} --installationkeybypass --skipvalidation  --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
         echo "##[set-output name=versionid;]$(echo ${GITHUBPACKAGE_VERSION_ID_REF})"
         echo "Version Id : ${{ steps.package.outputs.versionid }}"
       id: package
