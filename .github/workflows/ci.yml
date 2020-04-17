@@ -24,7 +24,7 @@ jobs:
       run: echo "##[set-output name=branch;]$(echo ${HEAD_BRANCH})"
       id: extract_branch
       env:
-        BASE_BRANCH: ${{ github.head_ref }}
+        HEAD_BRANCH: ${{ github.head_ref }}
       if: github.event_name == 'pull_request'
 
     - name: Validate branch name
