@@ -27,7 +27,7 @@ jobs:
       shell: bash
       run: |
         echo "${HEAD_BRANCH}"
-        echo "##[set-output name=branch;]echo "${HEAD_BRANCH}" | awk -F / '{ print $(NF-1) }' # d"
+        echo "##[set-output name=branch;]echo \"${HEAD_BRANCH}\" | awk -F / '{ print $(NF-1) }' # d"
       id: extract_branch
       if: github.event_name == 'pull_request'
 
