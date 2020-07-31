@@ -8,24 +8,24 @@ The goal of this project is to make integration and testing of external NLP serv
 
 ## Installation instructions
 
-### Un-managed package installation
+### Method 1 : Un-managed package installation
 
 To install using a pre-built package, use the installation links provided [here](https://github.com/forcedotcom/nlp-gauntlet/releases)
 
 
-### Non-Scratch Org quick deploy
+### Method 2 : Non-Scratch Org quick deploy
 
 <a href="https://githubsfdeploy.herokuapp.com">
   <img alt="Deploy to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>
 
-### Scratch Org quick deploy
+### Method 3 : Scratch Org quick deploy
 
 [![Deploy](https://deploy-to-sfdx.com/dist/assets/images/DeployToSFDX.svg)](https://deploy-to-sfdx.com/)
 
 
-### Scratch Org sfdx cli deploy
+### Method 4 : Scratch Org sfdx CLI deploy
 
 1. Install Salesforce DX. Enable the Dev Hub in your org or sign up for a Dev Hub trial org and install the Salesforce DX CLI. Follow the instructions in the [Salesforce DX Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm?search_text=trial%20hub%20org) or in the [App Development with Salesforce DX](https://trailhead.salesforce.com/modules/sfdx_app_dev) Trailhead module.
 
